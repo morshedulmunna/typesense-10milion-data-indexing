@@ -1,12 +1,15 @@
 import {
   Controller,
+  Get,
   Post,
+  Query,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as fs from 'fs';
 import * as path from 'path';
+import { SearchParams } from 'typesense/lib/Typesense/Documents';
 import { TypesenseService } from './typesense.service';
 
 @Controller('typesense')
@@ -36,5 +39,17 @@ export class TypesenseController {
     }, []);
 
     return this.typesenseService.indexData(books);
+  }
+
+  @Get('/search/books')
+  async searchBook(@Query() search: SearchParams) {
+    console.log(search);
+
+    let searchParameters = {
+      q: '*',
+      ...search,
+    };
+
+    return this.typesenseService.searchData(searchParameters);
   }
 }
