@@ -1,7 +1,7 @@
 # compiled output
 /dist
 /node_modules
-
+/typesense-data
 # Logs
 logs
 *.log
