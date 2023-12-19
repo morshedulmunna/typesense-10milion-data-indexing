@@ -11,4 +11,5 @@ const typesense = new Typesense.Client({
   apiKey: 'xyz',
   connectionTimeoutSeconds: 2,
 });
+
 export default typesense;
