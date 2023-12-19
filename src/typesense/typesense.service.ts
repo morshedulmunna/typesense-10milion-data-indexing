@@ -1,13 +1,15 @@
 // typesense.service.ts
 
 import { Injectable } from '@nestjs/common';
+import typesenseConfig from 'src/config/typesense.config';
 import booksSchema from 'src/schema/bookSchema';
 import IndexingService from 'src/utils/indexing.service';
 import { SearchParams } from 'typesense/lib/Typesense/Documents';
 
 @Injectable()
 export class TypesenseService {
-  constructor(private readonly typesense: IndexingService) {}
+  private readonly typesenseClient = typesenseConfig;
+  private readonly typesense = new IndexingService(this.typesenseClient);
 
   async indexData(data: any): Promise<any> {
     try {

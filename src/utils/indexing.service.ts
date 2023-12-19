@@ -1,31 +1,32 @@
 import { Injectable } from '@nestjs/common';
-import Typesense from 'typesense';
+import Typesense, { Client } from 'typesense';
+import {
+  CollectionCreateOptions,
+  CollectionCreateSchema,
+} from 'typesense/lib/Typesense/Collections';
+import { ConfigurationOptions } from 'typesense/lib/Typesense/Configuration';
 import { SearchParams } from 'typesense/lib/Typesense/Documents';
+interface TypesenseConfig {
+  any;
+}
 
 @Injectable()
 export default class IndexingService {
-  private readonly _indexingClient: any;
+  private readonly _indexingClient: Client;
 
-  constructor() {
-    this._indexingClient = new Typesense.Client({
-      nodes: [
-        {
-          host: process.env.TYPESENSE_HOST,
-          port: parseInt(process.env.TYPESENSE_PORT),
-          protocol: process.env.TYPESENSE_PROTOCOL,
-        },
-      ],
-      apiKey: process.env.TYPESENSE_API_KEY,
-      connectionTimeoutSeconds: parseInt(
-        process.env.TYPESENSE_CONNECTION_TIMEOUT,
-      ),
-    });
+  constructor(config: ConfigurationOptions) {
+    this._indexingClient = new Typesense.Client(config);
   }
 
   //   indexing method
-  async createIndexing(data: any, schema: any, collection: string) {
+  async createIndexing(
+    data: any,
+    schema: CollectionCreateSchema,
+    collection: string,
+    options?: CollectionCreateOptions,
+  ) {
     try {
-      await this._indexingClient.collections().create(schema);
+      await this._indexingClient.collections().create(schema, options);
 
       const result = await this._indexingClient
         .collections(collection)
