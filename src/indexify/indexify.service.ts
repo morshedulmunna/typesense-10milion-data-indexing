@@ -1,30 +1,34 @@
 import { Injectable } from '@nestjs/common';
+import { iIndexing } from 'src/types';
 import Typesense, { Client } from 'typesense';
 import {
-  CollectionCreateOptions,
-  CollectionCreateSchema,
-} from 'typesense/lib/Typesense/Collections';
+  SearchParams,
+  SearchResponse,
+} from 'typesense/lib/Typesense/Documents';
+
 import { ConfigurationOptions } from 'typesense/lib/Typesense/Configuration';
-import { SearchParams } from 'typesense/lib/Typesense/Documents';
-interface TypesenseConfig {
-  any;
-}
+import { IndexifyAbstract } from './indexify.abstract';
 
 @Injectable()
-export default class IndexingService {
+export class Indexify implements IndexifyAbstract {
   private readonly _indexingClient: Client;
 
   constructor(config: ConfigurationOptions) {
     this._indexingClient = new Typesense.Client(config);
   }
 
-  //   indexing method
-  async createIndexing(
-    data: any,
-    schema: CollectionCreateSchema,
-    collection: string,
-    options?: CollectionCreateOptions,
-  ) {
+  /**
+   *
+   * Indexing method
+   *
+   */
+
+  async indexing({
+    data,
+    schema,
+    collection,
+    options,
+  }: iIndexing): Promise<string> {
     try {
       await this._indexingClient.collections().create(schema, options);
 
@@ -39,8 +43,15 @@ export default class IndexingService {
     }
   }
 
-  // Getting Search Results
-  async searchResult(query: SearchParams, collection: string) {
+  /**
+   *
+   * Search method implement
+   *
+   */
+  async searchResult(
+    query: SearchParams,
+    collection: string,
+  ): Promise<SearchResponse<object>> {
     try {
       const searchResults = await this._indexingClient
         .collections(collection)

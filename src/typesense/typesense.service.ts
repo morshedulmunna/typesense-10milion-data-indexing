@@ -1,28 +1,39 @@
-// typesense.service.ts
-
 import { Injectable } from '@nestjs/common';
 import typesenseConfig from 'src/config/typesense.config';
+import { Indexify } from 'src/indexify/indexify.service';
 import booksSchema from 'src/schema/bookSchema';
-import IndexingService from 'src/utils/indexing.service';
-import { SearchParams } from 'typesense/lib/Typesense/Documents';
+import {
+  SearchParams,
+  SearchResponse,
+} from 'typesense/lib/Typesense/Documents';
 
 @Injectable()
 export class TypesenseService {
   private readonly typesenseClient = typesenseConfig;
-  private readonly typesense = new IndexingService(this.typesenseClient);
+  private readonly typesense = new Indexify(this.typesenseClient);
 
-  async indexData(data: any): Promise<any> {
+  /**
+   *
+   * Index my Data
+   *
+   */
+
+  async indexData(data: any): Promise<string> {
     try {
-      this.typesense.createIndexing(data, booksSchema, 'booksCollection');
+      return await this.typesense.indexing({
+        data,
+        schema: booksSchema,
+        collection: 'booksCollection',
+      });
     } catch (error) {
       console.log(error.message);
       return error.message;
     }
   }
 
-  async searchData(query: SearchParams) {
+  async searchData(query: SearchParams): Promise<SearchResponse<object>> {
     try {
-      this.typesense.searchResult(query, 'booksCollection');
+      return this.typesense.searchResult(query, 'booksCollection');
     } catch (error) {
       console.log(error);
 
