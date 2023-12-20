@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { iIndexing } from 'src/types';
 import Typesense, { Client } from 'typesense';
+import { ConfigurationOptions } from 'typesense/lib/Typesense/Configuration';
 import {
   SearchParams,
   SearchResponse,
 } from 'typesense/lib/Typesense/Documents';
-
-import { ConfigurationOptions } from 'typesense/lib/Typesense/Configuration';
 import { IndexifyAbstract } from './indexify.abstract';
 
 @Injectable()
@@ -22,8 +21,7 @@ export class Indexify implements IndexifyAbstract {
    * Indexing method
    *
    */
-
-  async indexing({
+  public async indexing({
     data,
     schema,
     collection,
@@ -48,7 +46,7 @@ export class Indexify implements IndexifyAbstract {
    * Search method implement
    *
    */
-  async searchResult(
+  public async searchResult(
     query: SearchParams,
     collection: string,
   ): Promise<SearchResponse<object>> {
@@ -61,5 +59,53 @@ export class Indexify implements IndexifyAbstract {
     } catch (error) {
       throw new Error(error.message);
     }
+  }
+
+  /*=============================================
+  =            Utils Privet method              =
+  =============================================*/
+
+  private async generateSchemaFromData(
+    data: { [x: string]: any },
+    collectionName: string,
+  ) {
+    if (typeof data !== 'object') {
+      throw new Error('Invalid data format. Expected JSON object.');
+    }
+
+    //-> Schema structure
+    const schema = {
+      name: collectionName,
+      fields: [],
+      default_sorting_field: null,
+    };
+
+    //-> Loop Throw
+    for (const key in data) {
+      const value = data[key];
+      let fieldType;
+
+      if (Array.isArray(value)) {
+      } else if (value.length > 0) {
+        fieldType = 'string[]';
+      } else if (typeof value === 'object') {
+        fieldType = 'object';
+      } else if (typeof value === 'string') {
+        fieldType = 'string';
+      } else if (typeof value === 'number') {
+        fieldType = Number.isInteger(value) ? 'int32' : 'float';
+      } else if (typeof value === 'boolean') {
+        fieldType = 'bool';
+      } else {
+        fieldType = 'string';
+      }
+
+      schema.fields.push({
+        name: key,
+        type: fieldType,
+      });
+    }
+
+    return schema;
   }
 }
