@@ -17,7 +17,6 @@ export class TypesenseService {
    * Index my Data
    *
    */
-
   async indexData(data: any): Promise<string> {
     try {
       return await this.typesense.indexing({
@@ -31,12 +30,16 @@ export class TypesenseService {
     }
   }
 
+  /**
+   *
+   * getting Search Data
+   *
+   */
   async searchData(query: SearchParams): Promise<SearchResponse<object>> {
     try {
       return this.typesense.searchResult(query, 'booksCollection');
     } catch (error) {
       console.log(error);
-
       return error.message;
     }
   }
