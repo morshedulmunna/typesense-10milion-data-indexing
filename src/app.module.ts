@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
+import { TypesenseModule } from './Indexing/typesense.module';
 import { AppService } from './app.service';
-import { TypesenseModule } from './typesense-client/typesense.module';
 import { AuthModule } from './auth/auth.module';
 
 @Module({

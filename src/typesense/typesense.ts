@@ -23,7 +23,7 @@ export class TypesenseClient {
   constructor(config: ConfigurationOptions, schema: CollectionCreateSchema) {
     this.client = new Typesense.Client(config);
     this.default_schema = schema;
-    this.schemaName = this.default_schema.name;
+    this.schemaName = schema.name;
     this.utils = new TypesenseUtils(config, schema);
   }
 
