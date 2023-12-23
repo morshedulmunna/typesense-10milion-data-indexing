@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { TypesenseModule } from './Indexing/typesense.module';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { IndexifyModule } from './indexify/indexify.module';
 
 @Module({
-  imports: [TypesenseModule, AuthModule],
+  imports: [AuthModule, IndexifyModule],
   controllers: [],
   providers: [AppService],
 })

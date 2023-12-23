@@ -11,20 +11,19 @@ import {
   DocumentImportParameters,
   ImportResponse,
 } from 'typesense/lib/Typesense/Documents';
-import { TypesenseUtils } from './utils/utils';
 
 @Injectable()
 export class TypesenseClient {
   private readonly default_schema: CollectionCreateSchema;
   private readonly client: Client;
   protected readonly schemaName: string;
-  private utils: TypesenseUtils;
+  // private utils: TypesenseUtils;
 
   constructor(config: ConfigurationOptions, schema: CollectionCreateSchema) {
     this.client = new Typesense.Client(config);
     this.default_schema = schema;
     this.schemaName = schema.name;
-    this.utils = new TypesenseUtils(config, schema);
+    // this.utils = new TypesenseUtils(config, schema);
   }
 
   /*=============================================
@@ -45,7 +44,7 @@ export class TypesenseClient {
   ): Promise<CollectionSchema> {
     try {
       // -> Exception Handle Schema Already created or not
-      this.utils.isSchemaExist(schema.name);
+      // this.utils.isSchemaExist(schema.name);
 
       if (!schema) {
         //-> If no schema provided, create a collection using the default schema
@@ -146,7 +145,7 @@ export class TypesenseClient {
   ): Promise<CollectionSchema> {
     try {
       // -> Exception Handle Schema Already exist or not
-      await this.utils.isSchemaExist(collectionName);
+      // await this.utils.isSchemaExist(collectionName);
 
       return await this.client
         .collections(collectionName)
