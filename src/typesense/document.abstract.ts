@@ -1,17 +1,18 @@
-import { iIndexing } from 'src/types';
 import {
+  ImportResponse,
   SearchParams,
   SearchResponse,
 } from 'typesense/lib/Typesense/Documents';
 
-export abstract class IndexifyAbstract {
+export abstract class DocumentAbstract {
   /*----------  Indexing Abstract  ----------*/
-  abstract indexing({
-    data,
-    schema,
-    collection,
-    options,
-  }: iIndexing): Promise<string>;
+  abstract batchIndex(
+    document: object[],
+    collection: string,
+  ): Promise<ImportResponse[]>;
+
+  /*----------  Single Document Indexing  ----------*/
+  abstract singleIndex(document: object, collection: string): Promise<object>;
 
   /*----------  search result abstract  ----------*/
   abstract searchResult(
