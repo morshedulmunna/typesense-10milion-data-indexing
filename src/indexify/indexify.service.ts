@@ -8,9 +8,11 @@ import {
 } from 'typesense/lib/Typesense/Documents';
 
 @Injectable()
-export class TypesenseService {
-  private readonly config = typesenseConfig;
-  private readonly typesense = new TypesenseClient(this.config, booksSchema);
+export class IndexifyService {
+  private readonly typesense = new TypesenseClient(
+    typesenseConfig,
+    booksSchema,
+  );
 
   /**
    *
@@ -19,9 +21,9 @@ export class TypesenseService {
    */
   async indexData(data: object[]): Promise<object> {
     try {
-      // return await this.typesense.batchIndex(data, 'booksCollection', {
-      //   action: 'upsert',
-      // });
+      return await this.typesense.batchIndex(data, 'booksCollection', {
+        action: 'upsert',
+      });
     } catch (error) {
       console.log(error.message);
       return error.message;
@@ -35,7 +37,7 @@ export class TypesenseService {
    */
   async searchData(query: SearchParams): Promise<SearchResponse<object>> {
     try {
-      // return this.typesense.searchResult(query, 'booksCollection');
+      //   return this.typesense.(query, 'booksCollection');
     } catch (error) {
       console.log(error);
       return error.message;
