@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ErrorException } from 'src/libs/errors.exception';
 import Typesense, { Client } from 'typesense';
 import {
   CollectionSchema,
@@ -6,6 +7,10 @@ import {
 } from 'typesense/lib/Typesense/Collection';
 import { CollectionCreateSchema } from 'typesense/lib/Typesense/Collections';
 import { ConfigurationOptions } from 'typesense/lib/Typesense/Configuration';
+import {
+  DocumentImportParameters,
+  ImportResponse,
+} from 'typesense/lib/Typesense/Documents';
 import { TypesenseUtils } from './utils/utils';
 
 @Injectable()
@@ -13,12 +18,13 @@ export class TypesenseClient {
   private readonly default_schema: CollectionCreateSchema;
   private readonly client: Client;
   protected readonly schemaName: string;
-  private utils = new TypesenseUtils();
+  private utils: TypesenseUtils;
 
   constructor(config: ConfigurationOptions, schema: CollectionCreateSchema) {
     this.client = new Typesense.Client(config);
     this.default_schema = schema;
     this.schemaName = this.default_schema.name;
+    this.utils = new TypesenseUtils(config, schema);
   }
 
   /*=============================================
@@ -37,15 +43,19 @@ export class TypesenseClient {
   public createCollection(
     schema?: CollectionCreateSchema,
   ): Promise<CollectionSchema> {
-    // -> Exception Handle Schema Already created or not
-    this.utils.isSchemaExist(schema.name);
+    try {
+      // -> Exception Handle Schema Already created or not
+      this.utils.isSchemaExist(schema.name);
 
-    if (!schema) {
-      //-> If no schema provided, create a collection using the default schema
-      return this.client.collections().create(this.default_schema);
-    } else {
-      //-> Create a collection using the provided schema
-      return this.client.collections().create(schema);
+      if (!schema) {
+        //-> If no schema provided, create a collection using the default schema
+        return this.client.collections().create(this.default_schema);
+      } else {
+        //-> Create a collection using the provided schema
+        return this.client.collections().create(schema);
+      }
+    } catch (error) {
+      throw new ErrorException(error);
     }
   }
 
@@ -61,12 +71,16 @@ export class TypesenseClient {
   public retrieveCollection(
     collectionName?: string,
   ): Promise<CollectionSchema> | Promise<CollectionSchema[]> {
-    if (!collectionName) {
-      // Retrieve all collections if no collectionName is specified
-      return this.client.collections().retrieve();
-    } else {
-      // Retrieve a specific collection based on the provided name
-      return this.client.collections(collectionName).retrieve();
+    try {
+      if (!collectionName) {
+        // Retrieve all collections if no collectionName is specified
+        return this.client.collections().retrieve();
+      } else {
+        // Retrieve a specific collection based on the provided name
+        return this.client.collections(collectionName).retrieve();
+      }
+    } catch (error) {
+      throw new ErrorException(error);
     }
   }
 
@@ -81,12 +95,16 @@ export class TypesenseClient {
   public retrieveSingleCollection(
     collectionName?: string,
   ): Promise<CollectionSchema> {
-    if (collectionName) {
-      // Retrieve the schema of the specified collection
-      return this.client.collections(collectionName).retrieve();
-    } else {
-      // Retrieve the schema of the default collection (this.schemaName)
-      return this.client.collections(this.schemaName).retrieve();
+    try {
+      if (collectionName) {
+        // Retrieve the schema of the specified collection
+        return this.client.collections(collectionName).retrieve();
+      } else {
+        // Retrieve the schema of the default collection (this.schemaName)
+        return this.client.collections(this.schemaName).retrieve();
+      }
+    } catch (error) {
+      throw new ErrorException(error);
     }
   }
 
@@ -97,10 +115,14 @@ export class TypesenseClient {
    * reference: https://typesense.org/docs/0.25.1/api/collections.html#drop-a-collection
    */
   public dropCollection(collectionName?: string): Promise<CollectionSchema> {
-    if (collectionName) {
-      return this.client.collections(collectionName).delete();
-    } else {
-      return this.client.collections(this.schemaName).delete();
+    try {
+      if (collectionName) {
+        return this.client.collections(collectionName).delete();
+      } else {
+        return this.client.collections(this.schemaName).delete();
+      }
+    } catch (error) {
+      throw new ErrorException(error);
     }
   }
 
@@ -118,20 +140,152 @@ export class TypesenseClient {
      ]
     }
    */
-  public updateCollection(
+  public async updateCollection(
     collectionName: string,
     update_schema: CollectionUpdateSchema,
   ): Promise<CollectionSchema> {
-    // -> Exception Handle Schema Already exist or not
-    this.utils.isSchemaExist(collectionName);
+    try {
+      // -> Exception Handle Schema Already exist or not
+      await this.utils.isSchemaExist(collectionName);
 
-    return this.client.collections(collectionName).update(update_schema);
+      return await this.client
+        .collections(collectionName)
+        .update(update_schema);
+    } catch (error) {
+      throw new ErrorException(error);
+    }
   }
   /*=====  End of Collection related Methods  ======*/
 
   /*=============================================================
   =            Indexing your own document methods               =
   ==============================================================*/
-  //TODO: working on indexing the document
+  /**
+   * Imports an array of documents into a specified collection or the default collection in batches.
+   * @param document - An array of objects representing the documents to import.
+   * @param collection - (Optional) The name of the collection where the documents will be imported.
+   *                     If not provided, the documents are imported into the default collection.
+   * @param options - (Optional) Additional parameters for the document import.
+   * @returns A Promise that resolves to an array of ImportResponse containing import details.
+   * @throws ErrorException - Throws an error exception if the document import encounters an error.
+   */
+  public async batchIndex(
+    document: object[],
+    collection?: string,
+    options?: DocumentImportParameters,
+  ): Promise<ImportResponse[]> {
+    try {
+      return await this.client
+        .collections(collection || this.schemaName)
+        .documents()
+        .import(document, options);
+    } catch (error) {
+      throw new ErrorException(error);
+    }
+  }
+
+  /**
+   * Creates a single document within a specified collection or the default collection.
+   * @param document - The object representing the document to create.
+   * @param collection - (Optional) The name of the collection to add the document to.
+   *                     If not provided, the document is added to the default collection.
+   * @returns A Promise that resolves to the created document object.
+   * @throws Error - Throws an error if document creation fails.
+   */
+  public async singleIndex(
+    document: object,
+    collection?: string,
+  ): Promise<object> {
+    try {
+      return await this.client
+        .collections(collection || this.schemaName)
+        .documents()
+        .create(document);
+    } catch (error) {
+      throw new ErrorException(error);
+    }
+  }
+
+  public async updateById(
+    document: object,
+    id: string,
+    collection?: string,
+  ): Promise<object> {
+    try {
+      return await this.client
+        .collections(collection || this.schemaName)
+        .documents(id)
+        .update(document);
+    } catch (error) {
+      throw new ErrorException(error);
+    }
+  }
+
+  /**
+   * Updates documents in a specified collection or the default collection based on a given query.
+   * @param document - The object representing the updates to apply to matching documents.
+   * @param collection - The name of the collection where the documents will be updated.
+   * @param query - The query string to filter documents for updating.
+   * @returns A Promise that resolves to an object representing the result of the update operation.
+   * @throws ErrorException - Throws an error exception if the update operation encounters an error.
+   */
+  public async updateByQuery(
+    document: object,
+    collection: string,
+    query: string, // e.g., 'num_employees:>1000'
+  ): Promise<object> {
+    try {
+      return await this.client
+        .collections(collection || this.schemaName)
+        .documents()
+        .update(document, { filter_by: query });
+    } catch (error) {
+      throw new ErrorException(error);
+    }
+  }
+
+  /**
+   * Deletes a single document by its ID from a specified collection or the default collection.
+   * @param id - The ID of the document to delete.
+   * @param collection - (Optional) The name of the collection from which to delete the document.
+   *                     If not provided, the document is deleted from the default collection.
+   * @returns A Promise that resolves to an object representing the result of the delete operation.
+   * @throws ErrorException - Throws an error exception if the delete operation encounters an error.
+   */
+  public async deleteById(id: string, collection?: string): Promise<object> {
+    try {
+      return await this.client
+        .collections(collection || this.schemaName)
+        .documents(id)
+        .delete();
+    } catch (error) {
+      throw new ErrorException(error);
+    }
+  }
+
+  /**
+   * Deletes documents in a specified collection or the default collection based on a given query.
+   * @param document - The object representing the documents to delete based on the query.
+   * @param collection - The name of the collection from which documents will be deleted.
+   * @param query - The query string to filter documents for deletion.
+   * @returns A Promise that resolves to an object representing the result of the delete operation.
+   * @throws ErrorException - Throws an error exception if the delete operation encounters an error.
+   */
+  public async deleteByQuery(
+    document: object,
+    collection: string,
+    query: string, // e.g., 'num_employees:>1000'
+  ): Promise<object> {
+    try {
+      return await this.client
+        .collections(collection || this.schemaName)
+        .documents()
+        .delete({ filter_by: query });
+    } catch (error) {
+      throw new ErrorException(error);
+    }
+  }
   /*=======  End of Indexing your own document methods  =======*/
+
+  //TODO: working on indexing the document
 }

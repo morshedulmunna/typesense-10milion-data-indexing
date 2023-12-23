@@ -9,7 +9,7 @@ import { TypesenseClient } from '../typesense';
 
 @Injectable()
 export class TypesenseUtils extends TypesenseClient {
-  constructor(config?: ConfigurationOptions, schema?: CollectionCreateSchema) {
+  constructor(config: ConfigurationOptions, schema: CollectionCreateSchema) {
     super(config, schema);
   }
 
