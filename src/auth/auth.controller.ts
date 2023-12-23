@@ -1,6 +1,6 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { ErrorException } from 'src/libs/errors.exception';
-import { registerDto } from 'src/types/auth';
+import { registerDto } from 'src/types/auth.dto';
 
 @Controller('auth')
 export class AuthController {

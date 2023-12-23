@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import typesenseConfig from 'src/config/typesense.config';
-import { Indexify } from 'src/typesense/document.service';
+import booksSchema from 'src/schema/bookSchema';
+import { TypesenseClient } from 'src/typesense/typesense';
 import {
   SearchParams,
   SearchResponse,
@@ -8,8 +9,8 @@ import {
 
 @Injectable()
 export class TypesenseService {
-  private readonly typesenseClient = typesenseConfig;
-  private readonly typesense = new Indexify(this.typesenseClient);
+  private readonly config = typesenseConfig;
+  private readonly typesense = new TypesenseClient(this.config, booksSchema);
 
   /**
    *
@@ -18,9 +19,9 @@ export class TypesenseService {
    */
   async indexData(data: object[]): Promise<object> {
     try {
-      return await this.typesense.batchIndex(data, 'booksCollection', {
-        action: 'upsert',
-      });
+      // return await this.typesense.batchIndex(data, 'booksCollection', {
+      //   action: 'upsert',
+      // });
     } catch (error) {
       console.log(error.message);
       return error.message;
@@ -34,7 +35,7 @@ export class TypesenseService {
    */
   async searchData(query: SearchParams): Promise<SearchResponse<object>> {
     try {
-      return this.typesense.searchResult(query, 'booksCollection');
+      // return this.typesense.searchResult(query, 'booksCollection');
     } catch (error) {
       console.log(error);
       return error.message;
