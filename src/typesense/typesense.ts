@@ -158,7 +158,7 @@ export class TypesenseClient {
   /*=====  End of Collection related Methods  ======*/
 
   /*=============================================================
-  =            Indexing your own document methods               =
+  =            Indexing  methods               =
   ==============================================================*/
   /**
    * Imports an array of documents into a specified collection or the default collection in batches.
@@ -265,14 +265,12 @@ export class TypesenseClient {
 
   /**
    * Deletes documents in a specified collection or the default collection based on a given query.
-   * @param document - The object representing the documents to delete based on the query.
    * @param collection - The name of the collection from which documents will be deleted.
    * @param query - The query string to filter documents for deletion.
    * @returns A Promise that resolves to an object representing the result of the delete operation.
    * @throws ErrorException - Throws an error exception if the delete operation encounters an error.
    */
   public async deleteByQuery(
-    document: object,
     collection: string,
     query: string, // e.g., 'num_employees:>1000'
   ): Promise<object> {
@@ -285,7 +283,7 @@ export class TypesenseClient {
       throw new ErrorException(error);
     }
   }
-  /*=======  End of Indexing your own document methods  =======*/
+  /*=======  End of Indexing  methods  =======*/
 
   //TODO: working on indexing the document
 }
