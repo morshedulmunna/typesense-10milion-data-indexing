@@ -51,12 +51,17 @@ export class AuthController {
   @HttpCode(HttpStatus.CREATED)
   async verifyEmail(
     @Body() { otp }: { otp: string },
+    @Res({ passthrough: true }) response: FastifyReply,
     @Cookies() { verification_token }: any,
   ) {
     try {
       console.log(otp);
 
-      return this.emailVerifyService.verifyEmail(otp, verification_token);
+      return this.emailVerifyService.verifyEmail(
+        otp,
+        verification_token,
+        response,
+      );
     } catch (error) {
       return new ErrorException(error);
     }

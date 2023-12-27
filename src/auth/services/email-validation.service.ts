@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { FastifyReply } from 'fastify';
 import { AuthJwtService } from 'src/libs/auth-jwt.service';
 import { ErrorException } from 'src/libs/errors.exception';
 
@@ -6,7 +7,11 @@ import { ErrorException } from 'src/libs/errors.exception';
 export class EmailVerifyService {
   constructor(private jwt: AuthJwtService) {}
 
-  async verifyEmail(OTP: string, verification_token: string) {
+  async verifyEmail(
+    OTP: string,
+    verification_token: string,
+    response: FastifyReply,
+  ) {
     try {
       const decodedData = await this.jwt.decodeToken(
         verification_token,
@@ -16,6 +21,8 @@ export class EmailVerifyService {
       if (decodedData.activationCode !== OTP) {
         throw new Error('Invalid OTP!');
       }
+
+      response.clearCookie('verification_token');
 
       // TODO:-> Now register user store data in DB
     } catch (error) {
