@@ -19,11 +19,22 @@ export class IndexifyService {
    * Index my Data
    *
    */
-  async indexData(data: object[]): Promise<object> {
+  async createCollection(): Promise<object> {
     try {
-      return await this.typesense.batchIndex(data, 'booksCollection', {
-        action: 'upsert',
-      });
+      return await this.typesense.createCollection();
+    } catch (error) {
+      console.log(error.message);
+      return error.message;
+    }
+  }
+  /**
+   *
+   * Index my Data
+   *
+   */
+  async singleDocumentIndexing(data: object): Promise<object> {
+    try {
+      return await this.typesense.singleIndex(data, 'my-collection');
     } catch (error) {
       console.log(error.message);
       return error.message;
@@ -37,7 +48,7 @@ export class IndexifyService {
    */
   async searchData(query: SearchParams): Promise<SearchResponse<object>> {
     try {
-      //   return this.typesense.(query, 'booksCollection');
+      return this.typesense.searchByQuery(query, 'my-collection');
     } catch (error) {
       console.log(error);
       return error.message;
