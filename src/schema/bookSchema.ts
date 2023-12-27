@@ -1,7 +1,7 @@
 import { CollectionCreateSchema } from 'typesense/lib/Typesense/Collections';
 
 const booksSchema: CollectionCreateSchema = {
-  name: 'booksCollection',
+  name: 'my-collection',
   fields: [
     { name: 'title', type: 'string' },
     { name: 'authors', type: 'string[]', facet: true },
