@@ -1,20 +1,36 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Res,
+} from '@nestjs/common';
 import { ErrorException } from 'src/libs/errors.exception';
-import { registerDto } from 'src/types/auth.dto';
+import { registerDto } from './dto/auth.dto';
+import { RegisterService } from './services/register.service';
+import { FastifyReply } from 'fastify';
 
 @Controller('auth')
 export class AuthController {
+  constructor(private readonly registerService: RegisterService) {}
   /**
    *
    * register time send otp to user  for verify email is valid or not
    *
    */
   //   @Public()
-  @Post('register')
+  @Post('send-email-validation-code')
   @HttpCode(HttpStatus.OK)
-  async registerSendOTP(@Body() register_info: registerDto): Promise<any> {
+  async registerSendOTP(
+    @Body() register_info: registerDto,
+    @Res({ passthrough: true }) response: FastifyReply,
+  ): Promise<any> {
     try {
-      //   return this.registerTailorService.registerSendOTP(registerData, response);
+      return this.registerService.sendEmailValidationCode(
+        register_info,
+        response,
+      );
     } catch (error) {
       throw new ErrorException(error);
     }

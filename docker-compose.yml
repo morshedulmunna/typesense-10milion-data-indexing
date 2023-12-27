@@ -16,6 +16,7 @@ services:
       - indexify_node_modules:/indexify/node_modules
     depends_on:
       - typesense
+      - postgresql
     networks:
       - my-network
 
@@ -30,6 +31,17 @@ services:
     networks:
       - my-network
 
+  postgresql:
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=tailor-db
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
 networks:
   my-network:
     driver: bridge
@@ -37,3 +49,4 @@ networks:
 volumes:
   indexify_node_modules:
   typesense_data:
+  db-data:
