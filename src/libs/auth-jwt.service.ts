@@ -83,10 +83,7 @@ export class AuthJwtService {
    */
   async decodeToken(token: string, secret_key: string): Promise<any> {
     try {
-      const decoded = jwt.verify(token, secret_key);
-      console.log(decoded);
-
-      return decoded;
+      return jwt.verify(token, secret_key);
     } catch (error) {
       throw new UnauthorizedException('Invalid token');
     }

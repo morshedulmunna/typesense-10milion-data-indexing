@@ -292,8 +292,6 @@ export class TypesenseClient {
   }
   /*=======  End of Indexing  methods  =======*/
 
-  //TODO: working on indexing the document
-
   public async searchByQuery(
     searchParameters: SearchParams,
     collection?: string,

@@ -50,15 +50,15 @@ export class AuthController {
   @Post('verify-otp')
   @HttpCode(HttpStatus.CREATED)
   async verifyEmail(
-    @Body() OTP: string,
+    @Body() { otp }: { otp: string },
     @Cookies() { verification_token }: any,
   ) {
     try {
-      console.log(verification_token);
+      console.log(otp);
 
-      return this.emailVerifyService.verifyEmail(OTP, verification_token);
+      return this.emailVerifyService.verifyEmail(otp, verification_token);
     } catch (error) {
-      throw new ErrorException(error);
+      return new ErrorException(error);
     }
   }
 
