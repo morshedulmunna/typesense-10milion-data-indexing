@@ -10,6 +10,8 @@ import { ConfigurationOptions } from 'typesense/lib/Typesense/Configuration';
 import {
   DocumentImportParameters,
   ImportResponse,
+  SearchParams,
+  SearchResponse,
 } from 'typesense/lib/Typesense/Documents';
 
 @Injectable()
@@ -194,13 +196,19 @@ export class TypesenseClient {
   public async singleIndex(
     document: object,
     collection?: string,
+    options?: DocumentImportParameters,
   ): Promise<object> {
     try {
       return await this.client
         .collections(collection || this.schemaName)
         .documents()
-        .create(document);
+        .create(document, options);
     } catch (error) {
+      if (error.httpStatus === 404) {
+        error.message = 'Schema not Found!';
+        throw new ErrorException(error);
+      }
+
       throw new ErrorException(error);
     }
   }
@@ -285,4 +293,18 @@ export class TypesenseClient {
   /*=======  End of Indexing  methods  =======*/
 
   //TODO: working on indexing the document
+
+  public async searchByQuery(
+    searchParameters: SearchParams,
+    collection?: string,
+  ): Promise<SearchResponse<object>> {
+    try {
+      return this.client
+        .collections(collection)
+        .documents()
+        .search(searchParameters);
+    } catch (error) {
+      throw new ErrorException(error);
+    }
+  }
 }
