@@ -28,7 +28,7 @@ export class RegisterService {
       // Hash Password
       const hash_password = await this.authService.hash(password);
       // Random Number generate
-      const randomNumber = this.common.randomNumber(9000);
+      const activationCode = this.common.randomNumber(9000);
 
       // Generate Email validation token for sending
       const email_validation_token = await this.authService.generateToken({
@@ -47,7 +47,7 @@ export class RegisterService {
         email,
         subject: 'Activation Your Account',
         template: 'activation-mail.ejs',
-        data: { name, activationCode: randomNumber },
+        data: { name, activationCode },
       });
 
       response.setCookie('verification_token', email_validation_token);
