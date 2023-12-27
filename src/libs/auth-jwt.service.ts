@@ -11,9 +11,14 @@ export class AuthJwtService {
    * @returns A Promise that resolves to the hashed representation of the input string.
    * @throws ErrorException - Throws an error exception if the hashing process encounters an error.
    */
-  async hash(str: string): Promise<string> {
+  async hash(str: string) {
     try {
-      return await bcrypt.hash(str, 10);
+      bcrypt.hash(str, 10, function (err, hash) {
+        if (err) {
+          return err;
+        }
+        return hash;
+      });
     } catch (error) {
       throw new ErrorException(error);
     }
@@ -22,13 +27,17 @@ export class AuthJwtService {
   /**
    * Compares a token with a hashed value to check for a match.
    * @param hash - The hashed value against which the token will be compared.
-   * @param token - The token to compare with the hashed value.
+   * @param str - The str to compare with the hashed value.
    * @returns A Promise that resolves to a boolean indicating whether the token matches the hash.
    * @throws ErrorException - Throws an error exception if the comparison process encounters an error.
    */
-  async compare(hash: string, token: string): Promise<boolean> {
+  async compare(hash: string, str: string) {
     try {
-      return await bcrypt.compare(token, hash);
+      bcrypt.compare(str, hash, function (err, result) {
+        // result == true
+        if (err) return err;
+        return result;
+      });
     } catch (error) {
       throw new ErrorException(error);
     }

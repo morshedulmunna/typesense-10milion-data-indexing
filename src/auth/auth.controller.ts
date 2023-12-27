@@ -10,10 +10,15 @@ import { ErrorException } from 'src/libs/errors.exception';
 import { registerDto } from './dto/auth.dto';
 import { RegisterService } from './services/register.service';
 import { FastifyReply } from 'fastify';
+import { EmailVerifyService } from './services/email-validation.service';
+import { Cookies } from 'src/libs/decorator/cookies.decorator';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly registerService: RegisterService) {}
+  constructor(
+    private readonly registerService: RegisterService,
+    private readonly emailVerifyService: EmailVerifyService,
+  ) {}
   /**
    *
    * register time send otp to user  for verify email is valid or not
@@ -44,10 +49,14 @@ export class AuthController {
   //   @Public()
   @Post('verify-otp')
   @HttpCode(HttpStatus.CREATED)
-  async verifyEmail() {
-    // @GetCookies() { verification_token }: any, // @Res({ passthrough: true }) response: Response, // @Body() OTP: string,
+  async verifyEmail(
+    @Body() OTP: string,
+    @Cookies() { verification_token }: any,
+  ) {
     try {
-      //   return this.emailVerifyService.verifyEmail(OTP, verification_token);
+      console.log(verification_token);
+
+      return this.emailVerifyService.verifyEmail(OTP, verification_token);
     } catch (error) {
       throw new ErrorException(error);
     }

@@ -26,7 +26,6 @@ export class RegisterService {
       });
 
       // Hash Password
-      const hash_password = await this.authService.hash(password);
       // Random Number generate
       const activationCode = this.common.randomNumber(9000);
 
@@ -35,7 +34,8 @@ export class RegisterService {
         payload: {
           email,
           name,
-          password: hash_password,
+          activationCode,
+          password,
         },
         secret: process.env.EMAIL_VALIDATION_JWT_SECRET,
         expiresIn:
