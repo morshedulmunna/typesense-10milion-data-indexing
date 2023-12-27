@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   Post,
@@ -10,17 +11,26 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { SearchParams } from 'typesense/lib/Typesense/Documents';
 import { DataProcess } from './../libs/process-jsonl';
 import { IndexifyService } from './indexify.service';
+import { bookDataDto } from './dto/documents.dto';
 
 @Controller('indexify')
 export class IndexifyController {
-  private readonly dataProcess = new DataProcess();
+  // private readonly dataProcess = new DataProcess();
   constructor(private readonly indexifyService: IndexifyService) {}
 
-  @Post('upload')
-  @UseInterceptors(FileInterceptor('file'))
-  async uploadBooks(@UploadedFile() file: Express.Multer.File) {
-    const data = await this.dataProcess.jsonlFileProcess('data', 'books.jsonl');
-    return this.indexifyService.indexData(data);
+  @Post('collection-create')
+  @UseInterceptors()
+  async createCollection() {
+    return this.indexifyService.createCollection();
+  }
+
+  @Post('single-upload')
+  @UseInterceptors()
+  async SingleDocumentIndexing(@Body() documents: bookDataDto) {
+    //@UploadedFile() file: Express.Multer.File
+    // const data = await this.dataProcess.jsonlFileProcess('data', 'books.jsonl');
+
+    return this.indexifyService.singleDocumentIndexing(documents);
   }
 
   @Get('/search/books')
