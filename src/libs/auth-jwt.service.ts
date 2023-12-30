@@ -11,19 +11,15 @@ export class AuthJwtService {
    * @returns A Promise that resolves to the hashed representation of the input string.
    * @throws ErrorException - Throws an error exception if the hashing process encounters an error.
    */
-  async hash(str: string) {
+  async hashPassword(password: string) {
     try {
-      bcrypt.hash(str, 10, function (err, hash) {
-        if (err) {
-          return err;
-        }
-        return hash;
-      });
+      const saltRounds = 10;
+      const passwordString = String(password);
+      return await bcrypt.hash(passwordString, saltRounds);
     } catch (error) {
-      throw new ErrorException(error);
+      console.error('Error hashing password:', error);
     }
   }
-
   /**
    * Compares a token with a hashed value to check for a match.
    * @param hash - The hashed value against which the token will be compared.
