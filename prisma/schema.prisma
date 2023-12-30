@@ -11,9 +11,10 @@ datasource db {
 }
 
 model auth {
-  id            String  @id @default(uuid())
+  id            String   @id @default(uuid())
   name          String
   email         String
+  isVerified    Boolean?
   password      String
   refresh_token String?
 }
