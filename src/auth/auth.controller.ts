@@ -55,8 +55,6 @@ export class AuthController {
     @Cookies() { verification_token }: any,
   ) {
     try {
-      console.log(otp);
-
       return this.emailVerifyService.verifyEmail(
         otp,
         verification_token,
