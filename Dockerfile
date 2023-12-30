@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:lts-bullseye-slim
 WORKDIR /indexify
 COPY package*.json .
 RUN npm install
