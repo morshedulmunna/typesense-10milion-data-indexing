@@ -8,4 +8,5 @@ export const postgresConfig: TypeOrmModuleOptions = {
   password: 'password',
   database: 'typesens-db',
   synchronize: true,
+  logging: true,
 };
