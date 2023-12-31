@@ -2,15 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { FastifyReply } from 'fastify';
 import { AuthJwtService } from 'src/libs/auth-jwt.service';
 import { ErrorException } from 'src/libs/errors.exception';
-import { PrismaService } from 'src/libs/prisma.service';
 import { ulid } from 'ulid';
 
 @Injectable()
 export class EmailVerifyService {
-  constructor(
-    private jwt: AuthJwtService,
-    private readonly prisma: PrismaService,
-  ) {}
+  constructor(private jwt: AuthJwtService) {}
 
   async verifyEmail(
     OTP: string,
@@ -54,13 +50,6 @@ export class EmailVerifyService {
         expiresIn: 24 * 60 * 60 * 1000,
       });
 
-      const existUser = await this.prisma.auth.findUnique({
-        where: {
-          email: email,
-        },
-      });
-      console.log(existUser);
-
       //TODO-> work here
 
       // if (existUser.isVerified) {
@@ -71,24 +60,12 @@ export class EmailVerifyService {
       // }
 
       // -> Store data in DB
-      const registerInfo = await this.prisma.auth.create({
-        data: {
-          name,
-          email,
-          password: hash_password,
-          isVerified: true,
-          special_key: ulid(),
-        },
-      });
-      delete registerInfo.password;
-      delete registerInfo.special_key;
 
       response.setCookie('access_token', accessToken);
       response.setCookie('refresh_token', refreshToken);
 
       return {
         message: 'Email Verified!',
-        data: registerInfo,
         token: {
           access_token: accessToken,
           refresh_token: refreshToken,
