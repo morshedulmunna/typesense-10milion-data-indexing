@@ -1,11 +1,10 @@
 import { FastifyReply } from 'fastify';
 import { Injectable } from '@nestjs/common';
-import { registerDto } from '../dto/auth.dto';
-import { PrismaAggregate } from 'src/libs/prisma-aggregate';
 import { AuthJwtService } from 'src/libs/auth-jwt.service';
 import { CommonService } from 'src/libs/common.service';
 import { SendMailService } from 'src/libs/send-email.service';
 import { ErrorException } from 'src/libs/errors.exception';
+import { AuthEntity } from '../entity/auth.entity';
 @Injectable()
 export class RegisterService {
   constructor(private readonly authService: AuthJwtService) {}
@@ -13,17 +12,13 @@ export class RegisterService {
   private emailService = new SendMailService();
 
   async sendEmailValidationCode(
-    register_info: registerDto,
+    register_info: AuthEntity,
     response: FastifyReply,
   ) {
     try {
       const { email, name, password } = register_info;
 
       // Checking user already exist or not
-      const prismaAggregate = new PrismaAggregate();
-      await prismaAggregate.checkDataExists('auth', {
-        email,
-      });
 
       // Hash Password
       // Random Number generate
