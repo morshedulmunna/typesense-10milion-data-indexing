@@ -52,7 +52,7 @@ export class AuthController {
   async verifyEmail(
     @Body() { otp }: { otp: string },
     @Res({ passthrough: true }) response: FastifyReply,
-    @Cookies() { verification_token }: any,
+    @Cookies() { verification_token }: { verification_token: string },
   ) {
     try {
       return this.emailVerifyService.verifyEmail(
