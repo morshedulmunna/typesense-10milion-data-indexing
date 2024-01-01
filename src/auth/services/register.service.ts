@@ -19,15 +19,11 @@ export class RegisterService {
     try {
       const { email, name, password } = register_info;
 
-      // Checking user already exist or not
-      const prismaAggregate = new PrismaAggregate();
-      await prismaAggregate.checkDataExists('auth', {
-        email,
-      });
-
       // Hash Password
       // Random Number generate
       const activationCode = this.common.randomNumber(9000);
+
+      console.log(process.env.EMAIL_VALIDATION_JWT_SECRET);
 
       // Generate Email validation token for sending
       const email_validation_token = await this.authService.generateToken({
