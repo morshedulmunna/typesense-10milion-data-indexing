@@ -15,6 +15,7 @@ import { EmailVerifyService } from './services/email-validation.service';
 import { Cookies } from 'src/libs/decorator/cookies.decorator';
 import { LoginService } from './services/login.service';
 import { RefreshService } from './services/refreshToken.service';
+import { LogoutService } from './services/logout.service';
 
 @Controller('auth')
 export class AuthController {
@@ -23,6 +24,7 @@ export class AuthController {
     private readonly emailVerifyService: EmailVerifyService,
     private readonly loginService: LoginService,
     private readonly refreshTokenService: RefreshService,
+    private readonly logoutService: LogoutService,
   ) {}
   /**
    *
@@ -94,13 +96,11 @@ export class AuthController {
    * Log out service:-> when clicked log out just remove cookies
    *
    */
-  //   @Get('logout')
-  //   @HttpCode(HttpStatus.OK)
-  //   async logout(@GetCurrentUser() user: { id: string }): Promise<{
-  //     message: string;
-  //   } | null> {
-  //     return this.logoutService.logout(user.id);
-  //   }
+  @Get('logout')
+  @HttpCode(HttpStatus.OK)
+  async logout(@Res({ passthrough: true }) response: FastifyReply) {
+    return this.logoutService.logout(response);
+  }
 
   /**
    *

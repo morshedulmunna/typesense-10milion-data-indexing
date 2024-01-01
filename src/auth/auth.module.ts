@@ -9,6 +9,7 @@ import { RefreshService } from './services/refreshToken.service';
 import { Repository } from 'typeorm';
 import { AuthEntity } from './entity/authentity';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { LogoutService } from './services/logout.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([AuthEntity])],
@@ -20,6 +21,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     LoginService,
     RefreshService,
     Repository,
+    LogoutService,
   ],
 })
 export class AuthModule {}
