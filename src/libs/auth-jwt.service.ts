@@ -29,13 +29,14 @@ export class AuthJwtService {
    */
   async compare(hash: string, str: string) {
     try {
-      bcrypt.compare(str, hash, function (err, result) {
-        // result == true
-        if (err) return err;
-        return result;
-      });
+      if (typeof hash !== 'string' || typeof str !== 'string') {
+        throw new Error('Inputs must be strings');
+      }
+
+      const result = await bcrypt.compare(str, hash);
+      return result;
     } catch (error) {
-      throw new ErrorException(error);
+      throw new Error('Comparison error: ' + error.message);
     }
   }
 

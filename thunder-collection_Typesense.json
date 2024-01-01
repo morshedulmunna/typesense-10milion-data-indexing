@@ -1,0 +1,135 @@
+{
+    "client": "Thunder Client",
+    "collectionName": "Typesense",
+    "dateExported": "2024-01-01T17:50:17.546Z",
+    "version": "1.1",
+    "folders": [],
+    "requests": [
+        {
+            "_id": "bf1aec8c-71d3-4422-a9bb-181a18310158",
+            "colId": "38ed9479-afc6-4c57-bfd0-283c0201faa8",
+            "containerId": "",
+            "name": "send-email-validation-code",
+            "url": "http://localhost:5001/auth/send-email-validation-code",
+            "method": "POST",
+            "sortNum": 5000,
+            "created": "2023-12-27T16:57:15.823Z",
+            "modified": "2024-01-01T17:35:35.947Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"name\": \"Morshedul Munna\",\n  \"email\": \"munnapod@gmail.com\",\n  \"password\": 12345678\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "229672e2-1853-4f6d-a4d3-f851bf815bed",
+            "colId": "38ed9479-afc6-4c57-bfd0-283c0201faa8",
+            "containerId": "",
+            "name": "verify-otp",
+            "url": "http://localhost:5001/auth/verify-otp",
+            "method": "POST",
+            "sortNum": 7500,
+            "created": "2023-12-27T16:59:17.768Z",
+            "modified": "2024-01-01T17:35:52.705Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"otp\": \"4002\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "7156e57a-414b-4b94-93ba-3d1273c3880b",
+            "colId": "38ed9479-afc6-4c57-bfd0-283c0201faa8",
+            "containerId": "",
+            "name": "Login",
+            "url": "http://localhost:5000/auth/login",
+            "method": "POST",
+            "sortNum": 8125,
+            "created": "2024-01-01T17:31:33.485Z",
+            "modified": "2024-01-01T17:46:05.791Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"email\": \"munnapod@gmail.com\",\n  \"password\": 12345678\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "0fe4ce70-1f7e-4c43-b1ae-8f573da4bbf5",
+            "colId": "38ed9479-afc6-4c57-bfd0-283c0201faa8",
+            "containerId": "",
+            "name": "Collection-create",
+            "url": "http://localhost:5000/indexify/collection-create",
+            "method": "POST",
+            "sortNum": 8750,
+            "created": "2023-12-27T16:13:24.018Z",
+            "modified": "2023-12-27T16:13:24.018Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "958ceeaa-1db6-410a-a0bc-00de10733d9b",
+            "colId": "38ed9479-afc6-4c57-bfd0-283c0201faa8",
+            "containerId": "",
+            "name": "SingleCollcetion Upload",
+            "url": "http://localhost:5000/indexify/single-upload",
+            "method": "POST",
+            "sortNum": 9375,
+            "created": "2023-12-27T16:15:02.484Z",
+            "modified": "2023-12-27T17:12:06.887Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"title\": \"Title test-1\",\n  \"authors\": [\"author-1\", \"author-2\", \"author-3\"],\n  \"publication_year\": 2023,\n  \"average_rating\": 10.34,\n  \"image_url\": \"https://images.gr-assets.com/books/1447303603m/2767052.jpg\",\n  \"ratings_count\": 4780653\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "0ca7fc64-9513-490b-84f2-0c3ade7be08a",
+            "colId": "38ed9479-afc6-4c57-bfd0-283c0201faa8",
+            "containerId": "",
+            "name": "Search Result",
+            "url": "http://localhost:5000/indexify/search/books?title=Title test-1&publication_year=1925&authors=George",
+            "method": "GET",
+            "sortNum": 20000,
+            "created": "2023-12-18T11:26:46.408Z",
+            "modified": "2023-12-27T17:12:24.659Z",
+            "headers": [],
+            "params": [
+                {
+                    "name": "title",
+                    "value": "Title test-1",
+                    "isPath": false
+                },
+                {
+                    "name": "publication_year",
+                    "value": "1925",
+                    "isPath": false
+                },
+                {
+                    "name": "authors",
+                    "value": "George",
+                    "isPath": false
+                },
+                {
+                    "name": "ratings_count",
+                    "value": "4602479",
+                    "isDisabled": true,
+                    "isPath": false
+                }
+            ],
+            "tests": []
+        }
+    ]
+}

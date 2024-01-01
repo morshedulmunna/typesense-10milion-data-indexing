@@ -1,12 +1,19 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { FastifyReply } from 'fastify';
 import { AuthJwtService } from 'src/libs/auth-jwt.service';
 import { ErrorException } from 'src/libs/errors.exception';
 import { ulid } from 'ulid';
+import { AuthEntity } from '../entity/authentity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class EmailVerifyService {
-  constructor(private jwt: AuthJwtService) {}
+  constructor(
+    private jwt: AuthJwtService,
+    @InjectRepository(AuthEntity)
+    private readonly authRepository: Repository<AuthEntity>,
+  ) {}
 
   async verifyEmail(
     OTP: string,
@@ -50,16 +57,17 @@ export class EmailVerifyService {
         expiresIn: 24 * 60 * 60 * 1000,
       });
 
-      //TODO-> work here
-
-      // if (existUser.isVerified) {
-      //   throw new Error('email is already Verified');
-      // }
-      // if (!existUser) {
-      //   throw new Error('User not Register. please signup first!');
-      // }
+      // Special Token
+      const special_token = ulid();
 
       // -> Store data in DB
+      this.authRepository.save({
+        name,
+        email,
+        password: hash_password,
+        special_token,
+        isVerified: true,
+      });
 
       response.setCookie('access_token', accessToken);
       response.setCookie('refresh_token', refreshToken);
