@@ -78,8 +78,15 @@ export class AuthController {
   // @Public()
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  async login(@Body() loginData: LoginDTO) {
-    return await this.loginService.login(loginData);
+  async login(
+    @Body() loginData: LoginDTO,
+    @Res({ passthrough: true }) response: FastifyReply,
+  ) {
+    try {
+      return await this.loginService.login(loginData, response);
+    } catch (error) {
+      throw new ErrorException(error);
+    }
   }
 
   /**
