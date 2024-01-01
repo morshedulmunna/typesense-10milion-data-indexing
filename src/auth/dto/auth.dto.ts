@@ -17,3 +17,13 @@ export class registerDto {
   @IsNotEmpty()
   password: string;
 }
+
+export class LoginDTO {
+  @ApiProperty()
+  @IsNotEmpty()
+  email: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  password: string;
+}

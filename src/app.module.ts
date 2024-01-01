@@ -13,6 +13,7 @@ import { ConfigModule } from '@nestjs/config';
       isGlobal: true,
       cache: true,
     }),
+
     AuthModule,
     IndexifyModule,
   ], //TypeOrmModule.forRoot(postgresConfig)
