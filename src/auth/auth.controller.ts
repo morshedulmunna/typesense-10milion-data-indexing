@@ -7,11 +7,11 @@ import {
   Res,
 } from '@nestjs/common';
 import { ErrorException } from 'src/libs/errors.exception';
-import { registerDto } from './dto/auth.dto';
 import { RegisterService } from './services/register.service';
 import { FastifyReply } from 'fastify';
 import { EmailVerifyService } from './services/email-validation.service';
 import { Cookies } from 'src/libs/decorator/cookies.decorator';
+import { AuthEntity } from './entity/auth.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -28,7 +28,7 @@ export class AuthController {
   @Post('send-email-validation-code')
   @HttpCode(HttpStatus.OK)
   async registerSendOTP(
-    @Body() register_info: registerDto,
+    @Body() register_info: AuthEntity,
     @Res({ passthrough: true }) response: FastifyReply,
   ): Promise<any> {
     try {
