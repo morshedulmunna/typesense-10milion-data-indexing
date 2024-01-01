@@ -41,6 +41,8 @@ services:
       - POSTGRES_DB=typesensdb
     volumes:
       - db-data:/var/lib/postgresql/data
+    networks:
+      - my-network
 
 networks:
   my-network:

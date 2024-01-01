@@ -36,7 +36,6 @@ export class IndexifyService {
     try {
       return await this.typesense.singleIndex(data, 'my-collection');
     } catch (error) {
-      console.log(error.message);
       return error.message;
     }
   }

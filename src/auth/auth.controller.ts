@@ -106,6 +106,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async refresh() // @GetCurrentUser() user: { id: string; refresh_token: string },
   : Promise<any> {
-    return this.refreshTokenService.refreshToken(user.id, user.refresh_token);
+    // return this.refreshTokenService.refreshToken();
+    return;
   }
 }
