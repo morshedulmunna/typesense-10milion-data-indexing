@@ -21,7 +21,7 @@ export class AuthGuard implements CanActivate {
     // if (!accessToken) {
     //   return false;
     // }
-    return true;
+    return false;
     // return this.authService.validateAccessToken(accessToken);
   }
 }

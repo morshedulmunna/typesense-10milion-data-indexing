@@ -6,6 +6,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { postgresConfig } from './config/postgresDB.config';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthEntity } from './auth/entity/authentity';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './libs/guard/auth.guard';
 
 @Module({
   imports: [
@@ -29,6 +31,12 @@ import { AuthEntity } from './auth/entity/authentity';
     IndexifyModule,
   ],
   controllers: [],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
 })
 export class AppModule {}
