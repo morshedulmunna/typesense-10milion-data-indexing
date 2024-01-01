@@ -5,6 +5,7 @@ import { IndexifyModule } from './indexify/indexify.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { postgresConfig } from './config/postgresDB.config';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AuthEntity } from './auth/entity/authentity';
 
 @Module({
   imports: [
@@ -15,14 +16,14 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'postgres',
+      host: 'localhost',
       port: 5432,
       password: 'password',
       username: 'postgres',
-      database: 'postgres',
+      entities: [AuthEntity],
+      database: 'typesensdb',
       synchronize: true,
       logging: true,
-      entities: [],
     }),
     AuthModule,
     IndexifyModule,

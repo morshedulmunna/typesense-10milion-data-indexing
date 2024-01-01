@@ -78,7 +78,7 @@ export class AuthController {
   // @Public()
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  async login(@Body() loginData: LoginDTO): Promise<any> {
+  async login(@Body() loginData: LoginDTO) {
     return await this.loginService.login(loginData);
   }
 

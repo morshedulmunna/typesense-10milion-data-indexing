@@ -6,9 +6,12 @@ import { Cookies } from 'src/libs/decorator/cookies.decorator';
 import { EmailVerifyService } from './services/email-validation.service';
 import { LoginService } from './services/login.service';
 import { RefreshService } from './services/refreshToken.service';
+import { Repository } from 'typeorm';
+import { AuthEntity } from './entity/authentity';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [],
+  imports: [TypeOrmModule.forFeature([AuthEntity])],
   controllers: [AuthController],
   providers: [
     RegisterService,
@@ -16,6 +19,7 @@ import { RefreshService } from './services/refreshToken.service';
     EmailVerifyService,
     LoginService,
     RefreshService,
+    Repository,
   ],
 })
 export class AuthModule {}
