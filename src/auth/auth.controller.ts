@@ -16,6 +16,7 @@ import { Cookies } from 'src/libs/decorator/cookies.decorator';
 import { LoginService } from './services/login.service';
 import { RefreshService } from './services/refreshToken.service';
 import { LogoutService } from './services/logout.service';
+import { AuthEntity } from './entity/auth.entity';
 
 @Controller('auth')
 export class AuthController {
