@@ -6,7 +6,7 @@ export const postgresConfig: TypeOrmModuleOptions = {
   port: 5432,
   username: 'postgres',
   password: 'password',
-  database: 'typesens-db',
+  database: 'typesensdb',
   synchronize: true,
   logging: true,
 };
