@@ -5,9 +5,16 @@ import { CommonService } from 'src/libs/common.service';
 import { SendMailService } from 'src/libs/send-email.service';
 import { ErrorException } from 'src/libs/errors.exception';
 import { AuthEntity } from '../entity/auth.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 @Injectable()
 export class RegisterService {
-  constructor(private readonly authService: AuthJwtService) {}
+  constructor(
+    private jwt: AuthJwtService,
+    private readonly authService: AuthJwtService,
+    @InjectRepository(AuthEntity)
+    private readonly authRepository: Repository<AuthEntity>,
+  ) {}
   private common = new CommonService();
   private emailService = new SendMailService();
 
@@ -18,9 +25,16 @@ export class RegisterService {
     try {
       const { email, name, password } = register_info;
 
-      // Checking user already exist or not
+      // Check if user with the provided email or phone already exists if not return user not register
+      const user = await this.authRepository.findOne({ where: { email } });
+      if (user?.isVerified === false) {
+        throw new Error(
+          `User ${name} already registered but not verified. please check your ${email} to getting OTP`,
+        );
+      }
 
       // Hash Password
+      const hash_password = await this.jwt.hashPassword(password);
       // Random Number generate
       const activationCode = this.common.randomNumber(9000);
 
@@ -46,6 +60,13 @@ export class RegisterService {
       });
 
       response.setCookie('verification_token', email_validation_token);
+
+      // -> Store data in DB
+      this.authRepository.save({
+        name,
+        email,
+        password: hash_password,
+      });
 
       return {
         message: `Please Check OTP send to ${email} for email verification`,
