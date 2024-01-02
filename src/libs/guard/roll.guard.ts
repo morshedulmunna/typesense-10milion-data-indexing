@@ -1,22 +1,24 @@
+// roles.guard.ts
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { ROLES_KEY } from '../decorator/roll.decorator';
 
 @Injectable()
-export class RollBaseGuard implements CanActivate {
+export class RolesGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
-    const roles = this.reflector.get<string[]>('roles', context.getHandler());
-    if (!roles) {
-      return true; // No roles defined, allow access by default
+    const requiredRoles = this.reflector.get<string[]>(
+      ROLES_KEY,
+      context.getHandler(),
+    );
+    if (!requiredRoles) {
+      return true;
     }
 
     const request = context.switchToHttp().getRequest();
-    const user = request.user; // Assuming user information is available in the request
+    const user = request.user; // Assuming user object is added to the request by some earlier middleware or guard (like JwtAuthGuard)
 
-    // Check if the user's roles match any of the allowed roles
-    const hasPermission = () => roles.some((role) => user.roles.includes(role));
-
-    return user && user.roles && hasPermission();
+    return requiredRoles.some((role) => user.roles?.includes(role));
   }
 }

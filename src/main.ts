@@ -8,6 +8,7 @@ import swaggerConfig from './config/swagger.config';
 import fastifyCookie from '@fastify/cookie';
 import { ValidationPipe } from '@nestjs/common';
 import { AuthGuard } from './libs/guard/auth.guard';
+import { RolesGuard } from './libs/guard/roll.guard';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -21,12 +22,9 @@ async function bootstrap() {
   });
   app.useGlobalPipes(new ValidationPipe());
 
-  // Retrieve Reflector and AuthGuard from the module context
-  const reflector = app.get(Reflector);
-  const authGuard = new AuthGuard(reflector);
-
   // Apply the AuthGuard globally
-  app.useGlobalGuards(authGuard);
+  app.useGlobalGuards(new AuthGuard(app.get(Reflector)));
+  // app.useGlobalGuards(new RolesGuard(app.get(Reflector)));
 
   // Swagger Config
   swaggerConfig(app);

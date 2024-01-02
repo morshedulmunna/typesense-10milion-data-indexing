@@ -33,7 +33,7 @@ export class AuthController {
    * register time send otp to user  for verify email is valid or not
    *
    */
-  // @Public()
+  @Public()
   @Post('send-email-validation-code')
   @HttpCode(HttpStatus.OK)
   async registerSendOTP(
