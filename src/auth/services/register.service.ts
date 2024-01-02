@@ -33,8 +33,6 @@ export class RegisterService {
         );
       }
 
-      // Hash Password
-      const hash_password = await this.jwt.hashPassword(password);
       // Random Number generate
       const activationCode = this.common.randomNumber(9000);
 
@@ -44,7 +42,6 @@ export class RegisterService {
           email,
           name,
           activationCode,
-          password,
         },
         secret: process.env.EMAIL_VALIDATION_JWT_SECRET,
         expiresIn:
@@ -61,15 +58,18 @@ export class RegisterService {
 
       response.setCookie('verification_token', email_validation_token);
 
+      const hash_password = await this.jwt.hashPassword(password);
       // -> Store data in DB
-      this.authRepository.save({
+      const registerUser = await this.authRepository.save({
         name,
         email,
         password: hash_password,
       });
 
       return {
-        message: `Please Check OTP send to ${email} for email verification`,
+        message: `Please Check OTP send to ${email} for email verification.`,
+        token: email_validation_token,
+        user: registerUser,
       };
     } catch (error) {
       throw new ErrorException(error);

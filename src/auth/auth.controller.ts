@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Query,
   Res,
 } from '@nestjs/common';
 import { ErrorException } from 'src/libs/errors.exception';
@@ -19,6 +20,7 @@ import { LogoutService } from './services/logout.service';
 import { AuthEntity } from './entity/auth.entity';
 import { Public } from 'src/libs/decorator/public.decorators';
 import { GetCurrentUser } from 'src/libs/decorator/get-current-user.decorators';
+import { RegenerateOTP } from './services/regenerate-otp.service';
 
 @Controller('auth')
 export class AuthController {
@@ -28,6 +30,7 @@ export class AuthController {
     private readonly loginService: LoginService,
     private readonly refreshTokenService: RefreshService,
     private readonly logoutService: LogoutService,
+    private readonly againGenerateOTP: RegenerateOTP,
   ) {}
   /**
    *
@@ -70,6 +73,26 @@ export class AuthController {
         verification_token,
         response,
       );
+    } catch (error) {
+      return new ErrorException(error);
+    }
+  }
+
+  /**
+   *
+   * Re generate OTP token
+   *
+   */
+
+  @Public()
+  @Post('regenerate-otp')
+  @HttpCode(HttpStatus.CREATED)
+  async regenerateOTP(
+    @Res({ passthrough: true }) response: FastifyReply,
+    @Query() email: string,
+  ) {
+    try {
+      return this.againGenerateOTP.regenerateOTP(response, email);
     } catch (error) {
       return new ErrorException(error);
     }

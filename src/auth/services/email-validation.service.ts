@@ -4,8 +4,8 @@ import { FastifyReply } from 'fastify';
 import { AuthJwtService } from 'src/libs/auth-jwt.service';
 import { ErrorException } from 'src/libs/errors.exception';
 import { ulid } from 'ulid';
-import { AuthEntity } from '../entity/authentity';
 import { Repository } from 'typeorm';
+import { AuthEntity } from '../entity/auth.entity';
 
 @Injectable()
 export class EmailVerifyService {
@@ -21,26 +21,50 @@ export class EmailVerifyService {
     response: FastifyReply,
   ) {
     try {
+      /**
+       *
+       * TODO: Checking the verification token store in cookies or headers
+       *
+       */
+
       const decodedData = await this.jwt.decodeToken(
         verification_token,
         process.env.EMAIL_VALIDATION_JWT_SECRET,
       );
 
+      if (!decodedData)
+        throw new Error(
+          `Invalid Verification Token! please try again generate a new OTP!`,
+        );
+
       if (decodedData.activationCode !== OTP.toString()) {
         throw new Error('Invalid OTP!');
       }
 
+      const user = await this.authRepository.findOne({
+        where: { email: decodedData.email },
+      });
+      const { email, isVerified, role, id, name } = user;
+
+      // Special Token
+      const special_token = ulid();
+
+      // Update user information in the database
+      this.authRepository.update(id, {
+        isVerified: true,
+        special_token: special_token,
+      });
+
       response.clearCookie('verification_token');
-
-      const { name, email, password } = decodedData;
-
-      // Store data in DB with password hash
 
       // AccessToken Generate
       const accessToken = await this.jwt.generateToken({
         payload: {
           name,
           email,
+          isVerified,
+          role,
+          id,
         },
         secret: process.env.ACCESS_TOKEN_SECRET,
         expiresIn: 5 * 60 * 1000,
@@ -51,13 +75,13 @@ export class EmailVerifyService {
         payload: {
           name,
           email,
+          isVerified,
+          role,
+          id,
         },
         secret: process.env.REFRESH_TOKEN_SECRET,
         expiresIn: 24 * 60 * 60 * 1000,
       });
-
-      // Special Token
-      const special_token = ulid();
 
       response.setCookie('access_token', accessToken);
       response.setCookie('refresh_token', refreshToken);

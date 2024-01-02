@@ -7,9 +7,11 @@ import { EmailVerifyService } from './services/email-validation.service';
 import { LoginService } from './services/login.service';
 import { RefreshService } from './services/refreshToken.service';
 import { Repository } from 'typeorm';
-import { AuthEntity } from './entity/authentity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { LogoutService } from './services/logout.service';
+import { AuthEntity } from './entity/auth.entity';
+import { RegenerateOTP } from './services/regenerate-otp.service';
+import { CommonService } from 'src/libs/common.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([AuthEntity])],
@@ -22,6 +24,8 @@ import { LogoutService } from './services/logout.service';
     RefreshService,
     Repository,
     LogoutService,
+    RegenerateOTP,
+    CommonService,
   ],
 })
 export class AuthModule {}

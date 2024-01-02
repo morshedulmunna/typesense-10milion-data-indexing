@@ -38,7 +38,7 @@ export class AuthEntity {
   })
   role: UserRole;
 
-  @Column()
+  @Column({ nullable: true }) // Allow null values in the database
   @IsOptional()
-  special_token: string;
+  special_token: string | null; // Type can be string or null
 }

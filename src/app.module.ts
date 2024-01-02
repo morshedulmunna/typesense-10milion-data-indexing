@@ -5,9 +5,9 @@ import { IndexifyModule } from './indexify/indexify.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { postgresConfig } from './config/postgresDB.config';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AuthEntity } from './auth/entity/authentity';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './libs/guard/auth.guard';
+import { AuthEntity } from './auth/entity/auth.entity';
 
 @Module({
   imports: [

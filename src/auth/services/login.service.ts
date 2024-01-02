@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { LoginDTO } from '../dto/auth.dto';
-import { AuthEntity } from '../entity/authentity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthJwtService } from 'src/libs/auth-jwt.service';
 import { FastifyReply } from 'fastify';
+import { AuthEntity } from '../entity/auth.entity';
 
 @Injectable()
 export class LoginService {
