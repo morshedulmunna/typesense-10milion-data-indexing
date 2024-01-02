@@ -1,12 +1,11 @@
-import { Cookies } from './../decorator/cookies.decorator';
-// auth.guard.ts
-
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
+import { IS_PUBLIC_KEY } from '../decorator/public.decorators';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  //   constructor(private authService: AuthService) {}
+  constructor(private reflector: Reflector) {}
 
   canActivate(
     context: ExecutionContext,
@@ -14,14 +13,31 @@ export class AuthGuard implements CanActivate {
     const httpContext = context.switchToHttp();
     const request = httpContext.getRequest();
     const cookies = request.cookies;
-    // const accessToken = request.headers['authorization'];
 
-    console.log(cookies);
+    const isPublic = this.reflector.get<boolean>(
+      IS_PUBLIC_KEY,
+      context.getHandler(),
+    );
+    if (isPublic) {
+      return true;
+    }
 
-    // if (!accessToken) {
+    // Extract the token from the cookie named 'access_token'
+    const accessToken = cookies['access_token'];
+
+    if (!accessToken) {
+      return false;
+    }
+
+    // Validate the token and extract user info
+    // return this.authService.validateAccessToken(accessToken).then(user => {
+    //   if (user) {
+    //     request.user = user; // Attach user info to the request object
+    //     return true;
+    //   }
     //   return false;
-    // }
-    return false;
-    // return this.authService.validateAccessToken(accessToken);
+    // }).catch(() => {
+    //   return false;
+    // });
   }
 }

@@ -17,6 +17,7 @@ import { LoginService } from './services/login.service';
 import { RefreshService } from './services/refreshToken.service';
 import { LogoutService } from './services/logout.service';
 import { AuthEntity } from './entity/auth.entity';
+import { Public } from 'src/libs/decorator/public.decorators';
 
 @Controller('auth')
 export class AuthController {
@@ -32,7 +33,7 @@ export class AuthController {
    * register time send otp to user  for verify email is valid or not
    *
    */
-  //   @Public()
+  // @Public()
   @Post('send-email-validation-code')
   @HttpCode(HttpStatus.OK)
   async registerSendOTP(
@@ -54,7 +55,7 @@ export class AuthController {
    * Email Verification service. in client come to OTP and checking is valid or not then return response
    *
    */
-  //   @Public()
+  // @Public()
   @Post('verify-otp')
   @HttpCode(HttpStatus.CREATED)
   async verifyEmail(
@@ -78,7 +79,6 @@ export class AuthController {
    * Login Controller
    *
    */
-  // @Public()
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(

@@ -23,7 +23,7 @@ import { AuthGuard } from './libs/guard/auth.guard';
       password: 'password',
       username: 'postgres',
       entities: [AuthEntity],
-      database: 'typesensdb',
+      database: 'indexifydb',
       synchronize: true,
       logging: true,
     }),
@@ -31,12 +31,6 @@ import { AuthGuard } from './libs/guard/auth.guard';
     IndexifyModule,
   ],
   controllers: [],
-  providers: [
-    AppService,
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
-  ],
+  providers: [],
 })
 export class AppModule {}
