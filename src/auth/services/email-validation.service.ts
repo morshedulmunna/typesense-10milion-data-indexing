@@ -35,7 +35,6 @@ export class EmailVerifyService {
       const { name, email, password } = decodedData;
 
       // Store data in DB with password hash
-      const hash_password = await this.jwt.hashPassword(password);
 
       // AccessToken Generate
       const accessToken = await this.jwt.generateToken({
@@ -59,15 +58,6 @@ export class EmailVerifyService {
 
       // Special Token
       const special_token = ulid();
-
-      // -> Store data in DB
-      this.authRepository.save({
-        name,
-        email,
-        password: hash_password,
-        special_token,
-        isVerified: true,
-      });
 
       response.setCookie('access_token', accessToken);
       response.setCookie('refresh_token', refreshToken);

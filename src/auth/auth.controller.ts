@@ -18,6 +18,7 @@ import { RefreshService } from './services/refreshToken.service';
 import { LogoutService } from './services/logout.service';
 import { AuthEntity } from './entity/auth.entity';
 import { Public } from 'src/libs/decorator/public.decorators';
+import { GetCurrentUser } from 'src/libs/decorator/get-current-user.decorators';
 
 @Controller('auth')
 export class AuthController {
@@ -55,7 +56,7 @@ export class AuthController {
    * Email Verification service. in client come to OTP and checking is valid or not then return response
    *
    */
-  // @Public()
+  @Public()
   @Post('verify-otp')
   @HttpCode(HttpStatus.CREATED)
   async verifyEmail(
@@ -108,12 +109,13 @@ export class AuthController {
    * when access token is invalid just refresh again for getting access token
    *
    */
-  // @Public()
+  @Public()
   // @UseGuards(RtGuard)
   @Get('refresh')
   @HttpCode(HttpStatus.OK)
-  async refresh() // @GetCurrentUser() user: { id: string; refresh_token: string },
-  : Promise<any> {
+  async refresh(@GetCurrentUser() user: { id: string; refresh_token: string }) {
+    console.log(user);
+
     // return this.refreshTokenService.refreshToken();
     return;
   }

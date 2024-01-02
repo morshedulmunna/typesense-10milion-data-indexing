@@ -38,7 +38,7 @@ export class AuthEntity {
   })
   role: UserRole;
 
-  @Column()
+  @Column({ nullable: true })
   @IsOptional()
-  special_token: string;
+  special_token: string | null;
 }
