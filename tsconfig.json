@@ -33,6 +33,12 @@
       "@app/auth/*": [
         "libs/auth/src/*",
         "libs/auth/src/*"
+      ],
+      "@app/error-exception": [
+        "libs/error-exception/src"
+      ],
+      "@app/error-exception/*": [
+        "libs/error-exception/src/*"
       ]
     }
   }

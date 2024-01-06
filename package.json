@@ -74,7 +74,8 @@
     ],
     "moduleNameMapper": {
       "^@app/typesense(|/.*)$": "<rootDir>/libs/typesense/src/$1",
-      "^@app/auth(|/.*)$": "<rootDir>/libs/auth/src/$1"
+      "^@app/auth(|/.*)$": "<rootDir>/libs/auth/src/$1",
+      "^@app/error-exception(|/.*)$": "<rootDir>/libs/error-exception/src/$1"
     }
   }
 }
