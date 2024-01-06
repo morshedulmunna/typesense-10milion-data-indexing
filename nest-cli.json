@@ -1,8 +1,41 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "src",
+  "sourceRoot": "apps/indexify-server/src",
   "compilerOptions": {
-    "deleteOutDir": true
-  }
+    "deleteOutDir": true,
+    "webpack": true,
+    "tsConfigPath": "apps/indexify-server/tsconfig.app.json"
+  },
+  "projects": {
+    "indexify-server": {
+      "type": "application",
+      "root": "apps/indexify-server",
+      "entryFile": "main",
+      "sourceRoot": "apps/indexify-server/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/indexify-server/tsconfig.app.json"
+      }
+    },
+    "auth": {
+      "type": "library",
+      "root": "libs/auth",
+      "entryFile": "index",
+      "sourceRoot": "libs/auth/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/auth/tsconfig.lib.json"
+      }
+    },
+    "typesense": {
+      "type": "library",
+      "root": "libs/typesense",
+      "entryFile": "index",
+      "sourceRoot": "libs/typesense/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/typesense/tsconfig.lib.json"
+      }
+    }
+  },
+  "monorepo": true,
+  "root": "apps/indexify-server"
 }

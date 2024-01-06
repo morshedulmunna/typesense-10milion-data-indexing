@@ -16,6 +16,24 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@app/typesense": [
+        "libs/typesense/src",
+        "libs/typesense/src"
+      ],
+      "@app/typesense/*": [
+        "libs/typesense/src/*",
+        "libs/typesense/src/*"
+      ],
+      "@app/auth": [
+        "libs/auth/src",
+        "libs/auth/src"
+      ],
+      "@app/auth/*": [
+        "libs/auth/src/*",
+        "libs/auth/src/*"
+      ]
+    }
   }
 }
