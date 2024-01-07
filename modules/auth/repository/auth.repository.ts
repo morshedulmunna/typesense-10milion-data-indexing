@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthEntity } from './auth.entity';
 import { InsertResult, Repository, UpdateResult } from 'typeorm';
+import { registerDto } from '../dto/index.dto';
 
 Injectable();
 export class AuthRepository {
@@ -10,7 +11,7 @@ export class AuthRepository {
     private readonly repository: Repository<AuthEntity>,
   ) {}
 
-  public async registerUser(userData: AuthEntity): Promise<InsertResult> {
+  public async registerUser(userData: registerDto): Promise<InsertResult> {
     const insertUserInfo = await this.repository.insert(userData);
     return insertUserInfo;
   }

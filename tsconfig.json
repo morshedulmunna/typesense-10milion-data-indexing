@@ -28,9 +28,11 @@
       ],
       "@app/auth": [
         "libs/auth/src",
+        "libs/auth/src",
         "libs/auth/src"
       ],
       "@app/auth/*": [
+        "libs/auth/src/*",
         "libs/auth/src/*",
         "libs/auth/src/*"
       ],
