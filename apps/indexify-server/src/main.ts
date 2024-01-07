@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import swaggerConfig from 'libs/config/swagger.config';
+import swaggerConfig from 'config/swagger.config';
 
 import {
   FastifyAdapter,
