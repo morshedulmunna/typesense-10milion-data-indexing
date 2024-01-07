@@ -28,9 +28,11 @@
       ],
       "@app/auth": [
         "libs/auth/src",
+        "libs/auth/src",
         "libs/auth/src"
       ],
       "@app/auth/*": [
+        "libs/auth/src/*",
         "libs/auth/src/*",
         "libs/auth/src/*"
       ],
@@ -51,6 +53,18 @@
       ],
       "@app/send-mailer/*": [
         "libs/send-mailer/src/*"
+      ],
+      "@app/postgresdb.config": [
+        "libs/postgresdb.config/src"
+      ],
+      "@app/postgresdb.config/*": [
+        "libs/postgresdb.config/src/*"
+      ],
+      "@app/postgres.config": [
+        "libs/postgres.config/src"
+      ],
+      "@app/postgres.config/*": [
+        "libs/postgres.config/src/*"
       ]
     }
   }

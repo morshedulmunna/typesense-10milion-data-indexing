@@ -17,15 +17,6 @@
         "tsConfigPath": "apps/indexify-server/tsconfig.app.json"
       }
     },
-    "auth": {
-      "type": "library",
-      "root": "libs/auth",
-      "entryFile": "index",
-      "sourceRoot": "libs/auth/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/auth/tsconfig.lib.json"
-      }
-    },
     "typesense": {
       "type": "library",
       "root": "libs/typesense",
@@ -60,6 +51,15 @@
       "sourceRoot": "libs/send-mailer/src",
       "compilerOptions": {
         "tsConfigPath": "libs/send-mailer/tsconfig.lib.json"
+      }
+    },
+    "postgres.config": {
+      "type": "library",
+      "root": "libs/postgres.config",
+      "entryFile": "index",
+      "sourceRoot": "libs/postgres.config/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/postgres.config/tsconfig.lib.json"
       }
     }
   },
