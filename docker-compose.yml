@@ -1,0 +1,54 @@
+version: '3.4'
+services:
+  indexify:
+    image: indexify
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: indexify-services
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - 8080:8080
+    volumes:
+      - ./:/indexify
+      - indexify_node_modules:/indexify/node_modules
+    depends_on:
+      - typesense
+      - postgresql
+    networks:
+      - my-network
+
+  typesense:
+    image: typesense/typesense:0.25.1
+    restart: on-failure
+    ports:
+      - '8108:8108'
+    volumes:
+      - typesense_data:/data
+    command: '--data-dir /data --api-key=xyz --enable-cors'
+    networks:
+      - my-network
+
+  postgresql:
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=typesensdb
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge
+
+volumes:
+  indexify_node_modules:
+  typesense_data:
+  db-data:
