@@ -26,7 +26,7 @@ export class CommonUtilityService {
       const passwordString = String(password);
       return await bcrypt.hash(passwordString, saltRounds);
     } catch (error) {
-      console.error('Error hashing password:', error);
+      throw new Error('Error hashing password: ' + error.message);
     }
   }
   /**
@@ -41,7 +41,6 @@ export class CommonUtilityService {
       if (typeof hash !== 'string' || typeof str !== 'string') {
         throw new Error('Inputs must be strings');
       }
-
       const result = await bcrypt.compare(str, hash);
       return result;
     } catch (error) {
