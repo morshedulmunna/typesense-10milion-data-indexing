@@ -39,6 +39,18 @@
       ],
       "@app/error-exception/*": [
         "libs/error-exception/src/*"
+      ],
+      "@app/common-utility": [
+        "libs/common-utility/src"
+      ],
+      "@app/common-utility/*": [
+        "libs/common-utility/src/*"
+      ],
+      "@app/send-mailer": [
+        "libs/send-mailer/src"
+      ],
+      "@app/send-mailer/*": [
+        "libs/send-mailer/src/*"
       ]
     }
   }

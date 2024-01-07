@@ -43,6 +43,24 @@
       "compilerOptions": {
         "tsConfigPath": "libs/error-exception/tsconfig.lib.json"
       }
+    },
+    "common-utility": {
+      "type": "library",
+      "root": "libs/common-utility",
+      "entryFile": "index",
+      "sourceRoot": "libs/common-utility/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/common-utility/tsconfig.lib.json"
+      }
+    },
+    "send-mailer": {
+      "type": "library",
+      "root": "libs/send-mailer",
+      "entryFile": "index",
+      "sourceRoot": "libs/send-mailer/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/send-mailer/tsconfig.lib.json"
+      }
     }
   },
   "monorepo": true,
