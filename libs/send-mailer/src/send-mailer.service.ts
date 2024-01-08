@@ -8,7 +8,6 @@ export interface EmailOptionTypes {
   subject: string;
   template: string;
   data: { [key: string]: any };
-  templatePath: string;
 }
 
 /**
@@ -46,11 +45,14 @@ export class SendMailService {
       },
     });
 
-    const { data, email, subject, template, templatePath } = options;
+    const { data, email, subject, template } = options;
 
-    const generateTempPathOption = path.join(__dirname, templatePath, template);
+    // const generateTempPathOption = path.join(__dirname, templatePath, template);
 
-    const html: string = await ejs.renderFile(generateTempPathOption, data);
+    // console.log(generateTempPathOption);
+    const templatePath = process.cwd() + template;
+
+    const html: string = await ejs.renderFile(templatePath, data);
 
     const mailOption = {
       form: process.env.SMTP_MAIL,

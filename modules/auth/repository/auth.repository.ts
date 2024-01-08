@@ -23,7 +23,6 @@ export class AuthRepository {
     const userInfo = await this.repository.findOne({
       where: [{ email }, { id }],
     });
-
     return userInfo;
   }
 
@@ -32,7 +31,6 @@ export class AuthRepository {
       { id: userData.id },
       { ...userData },
     );
-
     return updateResult;
   }
 
