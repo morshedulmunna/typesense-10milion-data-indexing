@@ -4,6 +4,7 @@ import { ErrorException } from '@app/error-exception';
 import { EmailVerifyService } from './services/EmailVerify.service';
 import { registerDto } from './dto/index.dto';
 import { RegistrationService } from './services/Registration.service';
+import { Public } from './decorator/public.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -17,6 +18,7 @@ export class AuthController {
    * -> Register
    *
    */
+  @Public()
   @Post('register')
   async register(
     @Body() register_info: registerDto,
