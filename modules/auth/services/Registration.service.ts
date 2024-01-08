@@ -40,11 +40,14 @@ export class RegistrationService {
     };
 
     // Email send for validation code
-    await this.SendMailService.sendEmail(emailOptions);
-
-    const res = await this.AuthRepository.registerUser(register_info);
-
-    console.log(res);
+    try {
+      // TODO: -> After add this       AuthEntity was not found
+      const res = await this.AuthRepository.registerUser(register_info);
+      await this.SendMailService.sendEmail(emailOptions);
+      console.log(res);
+    } catch (error) {
+      throw new Error(error.message);
+    }
 
     // response.setCookie('verification_token', email_validation_token);
 
