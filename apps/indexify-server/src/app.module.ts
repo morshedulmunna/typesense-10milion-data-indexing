@@ -4,16 +4,25 @@ import { AppService } from './app.service';
 import { AuthModule } from 'modules/auth/auth.module';
 import { PostgresConfigModule } from 'config/postgres.config.module';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from 'modules/auth/guards/Auth.guard';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+
     AuthModule,
     PostgresConfigModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
 })
 export class AppModule {}

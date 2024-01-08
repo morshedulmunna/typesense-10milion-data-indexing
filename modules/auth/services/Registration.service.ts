@@ -3,12 +3,14 @@ import { registerDto } from '../dto/index.dto';
 import { FastifyReply } from 'fastify';
 import { CommonUtilityModule, CommonUtilityService } from '@app/common-utility';
 import { EmailOptionTypes, SendMailService } from '@app/send-mailer';
+import { AuthRepository } from '../repository/auth.repository';
 
 @Injectable()
 export class RegistrationService {
   constructor(
     private readonly commonUtility: CommonUtilityService,
     private readonly SendMailService: SendMailService,
+    private readonly AuthRepository: AuthRepository,
   ) {}
 
   async registration(register_info: registerDto, response: FastifyReply) {
@@ -39,6 +41,10 @@ export class RegistrationService {
 
     // Email send for validation code
     await this.SendMailService.sendEmail(emailOptions);
+
+    const res = await this.AuthRepository.registerUser(register_info);
+
+    console.log(res);
 
     // response.setCookie('verification_token', email_validation_token);
 
