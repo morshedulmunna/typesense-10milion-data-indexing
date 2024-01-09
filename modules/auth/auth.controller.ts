@@ -60,7 +60,7 @@ export class AuthController {
   @Post('email-verify')
   async emailVerify(@Body() otp: verifyEmailDTO, @GetToken() token: string) {
     try {
-      this.emailVerifyService.emailVerify(otp, token);
+      return this.emailVerifyService.emailVerify(otp, token);
     } catch (error) {
       throw new ErrorException(error.message);
     }

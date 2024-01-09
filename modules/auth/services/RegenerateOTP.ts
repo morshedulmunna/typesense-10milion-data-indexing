@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { regenerateOtp } from '../dto/index.dto';
 import { AuthRepository } from '../repository/auth.repository';
-import { CommonUtilityService } from '@app/common-utility';
+
 import { EmailOptionTypes, SendMailService } from '@app/send-mailer';
+import { CommonUtilityService } from '../utility-service/common-utility.service';
 
 @Injectable()
 export class RegenerateOtService {
@@ -32,9 +33,9 @@ export class RegenerateOtService {
             activationCode,
             password: result.password, //TODO: Passing Hashed Password
           },
-          secret: process.env.EMAIL_VALIDATION_JWT_SECRET,
+          secret: process.env.JWT_SECRET,
           expiresIn:
-            parseInt(process.env.EMAIL_VALIDATION_JET_SECRET_EXPIRE) *
+            parseInt(process.env.JWT_SECRET_EXPIRE) *
             60 *
             1000,
         });

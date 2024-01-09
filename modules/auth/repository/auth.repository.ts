@@ -27,8 +27,20 @@ export class AuthRepository {
   }
 
   public async updateUser(userData: AuthEntity): Promise<UpdateResult> {
+    console.log(userData.id);
+
     const updateResult = await this.repository.update(
       { id: userData.id },
+      { ...userData },
+    );
+    return updateResult;
+  }
+
+  public async updateUserByEmail(userData: AuthEntity): Promise<UpdateResult> {
+    console.log(userData.email); // Assuming email is the unique identifier
+
+    const updateResult = await this.repository.update(
+      { email: userData.email }, // Update based on the email
       { ...userData },
     );
     return updateResult;

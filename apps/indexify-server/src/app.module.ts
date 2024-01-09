@@ -6,6 +6,7 @@ import { PostgresConfigModule } from 'config/postgres.config.module';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from 'modules/auth/guards/Auth.guard';
+import { CommonUtilityService } from 'modules/auth/utility-service/common-utility.service';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { AuthGuard } from 'modules/auth/guards/Auth.guard';
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
+    CommonUtilityService,
   ],
 })
 export class AppModule {}
