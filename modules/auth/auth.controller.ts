@@ -4,9 +4,9 @@ import { ErrorException } from '@app/error-exception';
 import { EmailVerifyService } from './services/EmailVerify.service';
 import { regenerateOtp, registerDto, verifyEmailDTO } from './dto/index.dto';
 import { RegistrationService } from './services/Registration.service';
-import { Public } from './decorator/public.decorator';
+import { Public } from './auth-decorator/public.decorator';
 import { RegenerateOtService } from './services/RegenerateOTP';
-import { GetToken } from './decorator/get-auth-token.decorator';
+import { GetToken } from './auth-decorator/get-auth-token.decorator';
 
 @Controller('auth')
 export class AuthController {
