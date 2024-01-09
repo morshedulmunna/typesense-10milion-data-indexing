@@ -58,6 +58,8 @@ export class RegistrationService {
         throw new Error(
           `User ${email} already registered! Not Verified. Please verify your email using OTP`,
         );
+      } else if (result.isVerified === true) {
+        throw new Error(`User ${email} already registered! & verified`);
       }
 
       await this.SendMailService.sendEmail(emailOptions);

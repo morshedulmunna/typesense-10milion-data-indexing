@@ -27,14 +27,25 @@ export class EmailVerifyService {
       process.env.JWT_SECRET,
     );
 
-    const { email, name, activationCode, password, iat, exp } = decodedData;
+    console.log(decodedData);
 
-    if (decodedData.activationCode !== otp.toString()) {
+    const { activationCode, password, iat, exp, ...cleanedData } = decodedData;
+
+    // Direct comparison between activationCode and OTP
+    if (activationCode !== otp.toString()) {
       throw new Error('Invalid OTP!');
     }
 
-    // TODO: needs to Update user information it's isVerified:true
+    // Update user information; set isVerified to true
+    const res = await this.authRepository.updateUserByEmail({
+      ...cleanedData,
+      isVerified: true,
+    });
 
-    // return await this.authRepository.updateUserByEmail();
+    if (res.affected > 0) {
+      return {
+        message: `your email ${decodedData.email}  is Verified`,
+      };
+    }
   }
 }

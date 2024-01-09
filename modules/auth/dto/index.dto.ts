@@ -1,5 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsEmail,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
+import { AuthEntity, UserRole } from '../repository/auth.entity';
+import { Column } from 'typeorm';
 
 export class registerDto {
   @ApiProperty()
@@ -27,4 +35,39 @@ export class verifyEmailDTO {
   @ApiProperty()
   @IsString()
   otp: string;
+}
+
+export class UpdateUserEntity extends AuthEntity {
+  @IsNumber()
+  @IsOptional()
+  id: number;
+
+  @IsString()
+  @IsOptional()
+  name: string;
+
+  @IsOptional()
+  @Column({
+    name: 'role',
+    type: 'enum',
+    enum: UserRole,
+    default: UserRole.USER,
+  })
+  role: UserRole;
+
+  @IsString()
+  @IsOptional()
+  password: string;
+
+  @IsString()
+  @IsOptional()
+  special_token: string;
+
+  @IsString()
+  @IsOptional()
+  email: string;
+
+  @IsBoolean()
+  @IsOptional()
+  isVerified: boolean;
 }

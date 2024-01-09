@@ -34,10 +34,7 @@ export class RegenerateOtService {
             password: result.password, //TODO: Passing Hashed Password
           },
           secret: process.env.JWT_SECRET,
-          expiresIn:
-            parseInt(process.env.JWT_SECRET_EXPIRE) *
-            60 *
-            1000,
+          expiresIn: parseInt(process.env.JWT_SECRET_EXPIRE) * 60 * 1000,
         });
 
         // Email Sent Options Create
@@ -57,6 +54,8 @@ export class RegenerateOtService {
       } catch (error) {
         throw new Error(error.message);
       }
+    } else if (result.isVerified === true) {
+      throw new Error(`User ${email} already registered! & verified`);
     }
   }
 }
