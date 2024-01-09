@@ -4,6 +4,7 @@ import { FastifyReply } from 'fastify';
 import { registerDto, verifyEmailDTO } from '../dto/index.dto';
 import * as jwt from 'jsonwebtoken';
 import { CommonUtilityService } from '../utility-service/common-utility.service';
+import { ulid } from 'ulid';
 
 interface DecoderUserInfo {
   email: string;
@@ -36,16 +37,50 @@ export class EmailVerifyService {
       throw new Error('Invalid OTP!');
     }
 
+    // Special Token
+    const special_token = ulid();
+
     // Update user information; set isVerified to true
-    const res = await this.authRepository.updateUserByEmail({
+    await this.authRepository.updateUserByEmail({
       ...cleanedData,
       isVerified: true,
+      special_token,
     });
 
-    if (res.affected > 0) {
-      return {
-        message: `your email ${decodedData.email}  is Verified`,
-      };
-    }
+    const result = await this.authRepository.getSingleUserInfo(
+      decodedData.email,
+    );
+
+    const { id, name, role, email, isVerified } = result;
+    // Generate Email validation token for sending
+    const access_token = await this.commonUtility.generateToken({
+      payload: {
+        id,
+        name,
+        role,
+        email,
+        isVerified,
+      },
+      secret: process.env.JWT_SECRET,
+      expiresIn: parseInt(process.env.JWT_SECRET_EXPIRE) * 60 * 1000,
+    });
+    // Generate Email validation token for sending
+    const refresh_token = await this.commonUtility.generateToken({
+      payload: {
+        id,
+        name,
+        role,
+        email,
+        isVerified,
+      },
+      secret: process.env.JWT_SECRET,
+      expiresIn: parseInt(process.env.REFRESH_JWT_SECRET_EXPIRE) * 60 * 1000,
+    });
+
+    return {
+      message: `your email ${decodedData.email}  is Verified`,
+      access_token,
+      refresh_token,
+    };
   }
 }
