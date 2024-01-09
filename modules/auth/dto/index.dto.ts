@@ -22,3 +22,9 @@ export class regenerateOtp {
   @IsEmail()
   email: string;
 }
+
+export class verifyEmailDTO {
+  @ApiProperty()
+  @IsString()
+  otp: string;
+}

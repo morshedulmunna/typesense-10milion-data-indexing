@@ -2,10 +2,11 @@ import { FastifyReply } from 'fastify';
 import { Body, Controller, Post, Res } from '@nestjs/common';
 import { ErrorException } from '@app/error-exception';
 import { EmailVerifyService } from './services/EmailVerify.service';
-import { regenerateOtp, registerDto } from './dto/index.dto';
+import { regenerateOtp, registerDto, verifyEmailDTO } from './dto/index.dto';
 import { RegistrationService } from './services/Registration.service';
 import { Public } from './decorator/public.decorator';
 import { RegenerateOtService } from './services/RegenerateOTP';
+import { GetToken } from './decorator/get-auth-token.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -53,16 +54,13 @@ export class AuthController {
 
   /**
    *
-   * Block comment
+   * After Register Verify Email.
    *
    */
   @Post('email-verify')
-  async emailVerify(
-    @Body() register_info: registerDto,
-    @Res({ passthrough: true }) response: FastifyReply,
-  ) {
+  async emailVerify(@Body() otp: verifyEmailDTO, @GetToken() token: string) {
     try {
-      this.emailVerifyService.emailVerify(register_info, response);
+      this.emailVerifyService.emailVerify(otp, token);
     } catch (error) {
       throw new ErrorException(error.message);
     }
