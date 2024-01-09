@@ -41,10 +41,24 @@ export class RegistrationService {
 
     // Email send for validation code
     try {
-      // TODO: -> After add this       AuthEntity was not found
-      const res = await this.AuthRepository.registerUser(register_info);
+      // If User Already Registered and Verified
+
+      const result = await this.AuthRepository.getSingleUserInfo(email);
+
+      if (!result) {
+        await this.AuthRepository.registerUser({
+          email,
+          name,
+          password: await this.commonUtility.hashPassword(password),
+        });
+      } else if (result.isVerified === false) {
+        //BUG: How can i pass Error in frontend
+        throw new Error(
+          `User ${email} already registered! Not Verified. Please verify your email using OTP`,
+        );
+      }
+
       await this.SendMailService.sendEmail(emailOptions);
-      console.log(res);
     } catch (error) {
       throw new Error(error.message);
     }

@@ -15,3 +15,10 @@ export class registerDto {
   @IsString()
   password: string;
 }
+
+export class regenerateOtp {
+  @ApiProperty()
+  @IsString()
+  @IsEmail()
+  email: string;
+}

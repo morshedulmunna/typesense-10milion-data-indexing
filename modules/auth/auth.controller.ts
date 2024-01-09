@@ -2,15 +2,17 @@ import { FastifyReply } from 'fastify';
 import { Body, Controller, Post, Res } from '@nestjs/common';
 import { ErrorException } from '@app/error-exception';
 import { EmailVerifyService } from './services/EmailVerify.service';
-import { registerDto } from './dto/index.dto';
+import { regenerateOtp, registerDto } from './dto/index.dto';
 import { RegistrationService } from './services/Registration.service';
 import { Public } from './decorator/public.decorator';
+import { RegenerateOtService } from './services/RegenerateOTP';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly emailVerifyService: EmailVerifyService,
     private readonly RegistrationService: RegistrationService,
+    private readonly regenerateOtpService: RegenerateOtService,
   ) {}
 
   /**
@@ -26,6 +28,24 @@ export class AuthController {
   ) {
     try {
       return this.RegistrationService.registration(register_info, response);
+    } catch (error) {
+      throw new ErrorException(error.message);
+    }
+  }
+
+  /**
+   *
+   * Regenerate OTP with Verify Token when it's not verified or expired
+   *
+   */
+  @Public()
+  @Post('regenerate-otp')
+  async regenerateOtp(
+    @Body() forVerificationEmail: regenerateOtp,
+    @Res({ passthrough: true }) response: FastifyReply,
+  ) {
+    try {
+      return this.regenerateOtpService.regenerateOtp(forVerificationEmail);
     } catch (error) {
       throw new ErrorException(error.message);
     }

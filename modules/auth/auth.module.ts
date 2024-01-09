@@ -7,6 +7,7 @@ import { EmailVerifyService } from './services/EmailVerify.service';
 import { RegistrationService } from './services/Registration.service';
 import { CommonUtilityService } from '@app/common-utility';
 import { SendMailService } from '@app/send-mailer';
+import { RegenerateOtService } from './services/RegenerateOTP';
 
 @Module({
   imports: [TypeOrmModule.forFeature([AuthEntity])],
@@ -17,6 +18,7 @@ import { SendMailService } from '@app/send-mailer';
     RegistrationService,
     CommonUtilityService,
     SendMailService,
+    RegenerateOtService,
   ],
 })
 export class AuthModule {}
