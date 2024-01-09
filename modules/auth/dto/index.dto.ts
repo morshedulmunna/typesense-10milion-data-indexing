@@ -71,3 +71,14 @@ export class UpdateUserEntity extends AuthEntity {
   @IsOptional()
   isVerified: boolean;
 }
+
+export class loginDto {
+  @ApiProperty()
+  @IsString()
+  @IsEmail()
+  email: string;
+
+  @ApiProperty()
+  @IsString()
+  password: string;
+}

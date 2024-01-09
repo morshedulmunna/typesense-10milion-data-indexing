@@ -2,11 +2,17 @@ import { FastifyReply } from 'fastify';
 import { Body, Controller, Post, Res } from '@nestjs/common';
 import { ErrorException } from '@app/error-exception';
 import { EmailVerifyService } from './services/EmailVerify.service';
-import { regenerateOtp, registerDto, verifyEmailDTO } from './dto/index.dto';
+import {
+  loginDto,
+  regenerateOtp,
+  registerDto,
+  verifyEmailDTO,
+} from './dto/index.dto';
 import { RegistrationService } from './services/Registration.service';
 import { Public } from './auth-decorator/public.decorator';
 import { RegenerateOtService } from './services/RegenerateOTP';
 import { GetToken } from './auth-decorator/get-auth-token.decorator';
+import { LoginService } from './services/Login.service';
 
 @Controller('auth')
 export class AuthController {
@@ -14,6 +20,7 @@ export class AuthController {
     private readonly emailVerifyService: EmailVerifyService,
     private readonly RegistrationService: RegistrationService,
     private readonly regenerateOtpService: RegenerateOtService,
+    private readonly loginService: LoginService,
   ) {}
 
   /**
@@ -61,6 +68,20 @@ export class AuthController {
   async emailVerify(@Body() otp: verifyEmailDTO, @GetToken() token: string) {
     try {
       return this.emailVerifyService.emailVerify(otp, token);
+    } catch (error) {
+      throw new ErrorException(error.message);
+    }
+  }
+  /**
+   *
+   * User login Controller
+   *
+   */
+  @Public()
+  @Post('login')
+  async login(@Body() loginInfo: loginDto) {
+    try {
+      return this.loginService.login(loginInfo);
     } catch (error) {
       throw new ErrorException(error.message);
     }
