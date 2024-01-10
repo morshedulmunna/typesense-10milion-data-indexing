@@ -1,6 +1,5 @@
 import { FastifyReply } from 'fastify';
 import { Body, Controller, Post, Res } from '@nestjs/common';
-import { ErrorException } from '@app/error-exception';
 import { EmailVerifyService } from './services/EmailVerify.service';
 import {
   loginDto,
@@ -34,11 +33,7 @@ export class AuthController {
     @Body() register_info: registerDto,
     @Res({ passthrough: true }) response: FastifyReply,
   ) {
-    try {
-      return this.RegistrationService.registration(register_info, response);
-    } catch (error) {
-      throw new ErrorException(error.message);
-    }
+    return this.RegistrationService.registration(register_info, response);
   }
 
   /**
@@ -52,11 +47,7 @@ export class AuthController {
     @Body() forVerificationEmail: regenerateOtp,
     @Res({ passthrough: true }) response: FastifyReply,
   ) {
-    try {
-      return this.regenerateOtpService.regenerateOtp(forVerificationEmail);
-    } catch (error) {
-      throw new ErrorException(error.message);
-    }
+    return this.regenerateOtpService.regenerateOtp(forVerificationEmail);
   }
 
   /**
@@ -66,11 +57,7 @@ export class AuthController {
    */
   @Post('email-verify')
   async emailVerify(@Body() otp: verifyEmailDTO, @GetToken() token: string) {
-    try {
-      return this.emailVerifyService.emailVerify(otp, token);
-    } catch (error) {
-      throw new ErrorException(error.message);
-    }
+    return this.emailVerifyService.emailVerify(otp, token);
   }
   /**
    *
@@ -80,10 +67,6 @@ export class AuthController {
   @Public()
   @Post('login')
   async login(@Body() loginInfo: loginDto) {
-    try {
-      return this.loginService.login(loginInfo);
-    } catch (error) {
-      throw new ErrorException(error.message);
-    }
+    return this.loginService.login(loginInfo);
   }
 }

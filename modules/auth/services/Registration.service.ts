@@ -1,9 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotAcceptableException,
+} from '@nestjs/common';
 import { registerDto } from '../dto/index.dto';
-import { FastifyReply } from 'fastify';
 import { EmailOptionTypes, SendMailService } from '@app/send-mailer';
 import { AuthRepository } from '../repository/auth.repository';
 import { CommonUtilityService } from '../utility-service/common-utility.service';
+import { FastifyReply } from 'fastify';
 
 @Injectable()
 export class RegistrationService {
@@ -41,31 +45,26 @@ export class RegistrationService {
       data: { name, activationCode },
     };
 
-    // Email send for validation code
-    try {
-      // If User Already Registered and Verified
+    const result = await this.AuthRepository.getSingleUserInfo(email);
 
-      const result = await this.AuthRepository.getSingleUserInfo(email);
-
-      if (!result) {
-        await this.AuthRepository.registerUser({
-          email,
-          name,
-          password: hashPassword,
-        });
-      } else if (result.isVerified === false) {
-        //BUG: How can i pass Error in frontend
-        throw new Error(
-          `User ${email} already registered! Not Verified. Please verify your email using OTP`,
-        );
-      } else if (result.isVerified === true) {
-        throw new Error(`User ${email} already registered! & verified`);
-      }
-
-      await this.SendMailService.sendEmail(emailOptions);
-    } catch (error) {
-      throw new Error(error.message);
+    if (!result) {
+      await this.AuthRepository.registerUser({
+        email,
+        name,
+        password: hashPassword,
+      });
+    } else if (result.isVerified === false) {
+      //BUG: How can i pass Error in frontend
+      throw new BadRequestException(
+        `User ${email} already registered! Not Verified. Please verify your email using OTP`,
+      );
+    } else if (result.isVerified === true) {
+      throw new BadRequestException(
+        `User ${email} already registered! & verified`,
+      );
     }
+
+    await this.SendMailService.sendEmail(emailOptions);
 
     // response.setCookie('verification_token', email_validation_token);
 

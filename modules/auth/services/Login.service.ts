@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { loginDto } from '../dto/index.dto';
 import { CommonUtilityService } from '../utility-service/common-utility.service';
 import { AuthRepository } from '../repository/auth.repository';
@@ -17,11 +21,11 @@ export class LoginService {
     const { id, email: user_email, name, isVerified, role } = userData;
 
     if (!userData) {
-      throw new Error(` User ${email} not found! please register.`);
+      throw new NotFoundException(` User ${email} not found! please register.`);
     }
 
     if (userData.isVerified === false) {
-      throw new Error(`User ${email} is not verified!`);
+      throw new BadRequestException(`User ${email} is not verified!`);
     }
 
     const res = await this.commonUtilityService.compare(
@@ -30,7 +34,7 @@ export class LoginService {
     );
 
     if (!res) {
-      throw new Error('Invalid password');
+      throw new BadRequestException('Invalid password');
     }
 
     // Generate Email validation token for sending
@@ -58,8 +62,11 @@ export class LoginService {
       expiresIn: parseInt(process.env.REFRESH_JWT_SECRET_EXPIRE) * 60 * 1000,
     });
 
+    delete userData.password;
+    delete userData.special_token;
+
     return {
-      message: `Login successful!`,
+      data: userData,
       access_token,
       refresh_token,
     };

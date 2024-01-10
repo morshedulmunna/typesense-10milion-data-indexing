@@ -27,14 +27,14 @@ export class AuthGuard implements CanActivate {
       context.getHandler(),
     );
     if (isPublic) {
-      return true; // Public routes can be accessed without authentication
+      return true;
     }
 
     // Check for Bearer token in headers or auth token in cookies
-    const token =
-      request.headers.authorization ||
-      request.cookies.authToken ||
-      request.session.token;
+    // const token =
+    //   request.headers.authorization ||
+    //   request.cookies.authToken ||
+    //   request.session.token;
 
     //  if(request.headers.authorization){
     //   if (!this.isTokenVerify(token, 'sds')) {
@@ -42,14 +42,17 @@ export class AuthGuard implements CanActivate {
     //   }
     //  }
 
-    if (!token) {
-      return false;
-    }
+    // console.log(token);
+
+    // if (!token) {
+    //   return false;
+    // }
 
     const requiredRole = this.reflector.get<string>(
       ROLES_KEY,
       context.getHandler(),
     );
+
     if (!requiredRole) {
       return true; // No specific role required, allow access
     }

@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotAcceptableException,
+} from '@nestjs/common';
 import { AuthRepository } from '../repository/auth.repository';
 import { FastifyReply } from 'fastify';
 import { registerDto, verifyEmailDTO } from '../dto/index.dto';
@@ -34,7 +38,7 @@ export class EmailVerifyService {
 
     // Direct comparison between activationCode and OTP
     if (activationCode !== otp.toString()) {
-      throw new Error('Invalid OTP!');
+      throw new BadRequestException('Invalid OTP!');
     }
 
     // Special Token

@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { regenerateOtp } from '../dto/index.dto';
 import { AuthRepository } from '../repository/auth.repository';
 
@@ -17,45 +21,42 @@ export class RegenerateOtService {
     const result = await this.AuthRepository.getSingleUserInfo(email);
 
     if (!result) {
-      throw new Error(`This email address is not registered!`);
+      throw new NotFoundException(`This email address is not registered!`);
     } else if (result.isVerified === false) {
       const name = result.name;
 
       // Random Number generate
       const activationCode = this.commonUtility.randomNumber(9000);
 
-      try {
-        // Generate activation code & Verify Token
-        const email_validation_token = await this.commonUtility.generateToken({
-          payload: {
-            email: result.email,
-            name: result.name,
-            activationCode,
-            password: result.password, //TODO: Passing Hashed Password
-          },
-          secret: process.env.JWT_SECRET,
-          expiresIn: parseInt(process.env.JWT_SECRET_EXPIRE) * 60 * 1000,
-        });
+      const email_validation_token = await this.commonUtility.generateToken({
+        payload: {
+          email: result.email,
+          name: result.name,
+          activationCode,
+          password: result.password, //TODO: Passing Hashed Password
+        },
+        secret: process.env.JWT_SECRET,
+        expiresIn: parseInt(process.env.JWT_SECRET_EXPIRE) * 60 * 1000,
+      });
 
-        // Email Sent Options Create
-        const emailOptions: EmailOptionTypes = {
-          email: email,
-          subject: 'Verification Code for Registration!',
-          template: '/modules/auth/templates/activation-mail.ejs',
-          data: { name, activationCode },
-        };
+      // Email Sent Options Create
+      const emailOptions: EmailOptionTypes = {
+        email: email,
+        subject: 'Verification Code for Registration!',
+        template: '/modules/auth/templates/activation-mail.ejs',
+        data: { name, activationCode },
+      };
 
-        await this.SendMailService.sendEmail(emailOptions);
+      await this.SendMailService.sendEmail(emailOptions);
 
-        return {
-          message: 'Verification Code Sent!',
-          token: email_validation_token,
-        };
-      } catch (error) {
-        throw new Error(error.message);
-      }
+      return {
+        message: 'Verification Code Sent!',
+        token: email_validation_token,
+      };
     } else if (result.isVerified === true) {
-      throw new Error(`User ${email} already registered! & verified`);
+      throw new BadRequestException(
+        `User ${email} already registered! & verified`,
+      );
     }
   }
 }

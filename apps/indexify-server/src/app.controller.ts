@@ -6,7 +6,6 @@ import { Public } from 'modules/auth/auth-decorator/public.decorator';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Public()
   @Get()
   getHello(): string {
     return this.appService.getHello();
