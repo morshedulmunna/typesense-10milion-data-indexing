@@ -28,36 +28,45 @@ export class AuthGuard implements CanActivate {
       return true;
     }
 
+    const token =
+      request.headers.authorization?.replace('Bearer ', '') ||
+      request.cookies.authToken ||
+      (request.session && request.session.token); // Check for session existence
+
+    if (!token) return false;
+
+    const tokenVerified: any = await this.isTokenVerify(
+      token,
+      process.env.JWT_SECRET,
+    );
+
+    const requiredRole = this.reflector.get<string>(
+      ROLES_KEY,
+      context.getHandler(),
+    );
+
+    if (!requiredRole) {
+      return true; // No specific role required, allow access
+    }
+    // Your authentication logic here to validate user role
+    const { role } = tokenVerified;
+    if (!tokenVerified || role !== requiredRole) {
+      throw new UnauthorizedException(
+        'You do not have the necessary role to access this resource',
+      );
+    }
+
     return true;
   }
   // TODO: Authentication Logic not working properly
   private async isTokenVerify(token: string, secret: string) {
     const decoded = await this.commonService.decodeToken(token, secret);
-    console.log(decoded);
 
     if (!decoded) return true;
+
+    return decoded;
   }
 }
-
-// const requiredRole = this.reflector.get<string>(
-//   ROLES_KEY,
-//   context.getHandler(),
-// );
-
-// console.log(requiredRole);
-
-// if (!requiredRole) {
-//   return true; // No specific role required, allow access
-// }
-// // Your authentication logic here to validate user role
-// const user = request;
-// console.log(user);
-
-// if (!user || user.role !== requiredRole) {
-//   throw new UnauthorizedException(
-//     'You do not have the necessary role to access this resource',
-//   );
-// }
 
 //    // Check for Bearer token in headers or auth token in cookies
 //    const token =
