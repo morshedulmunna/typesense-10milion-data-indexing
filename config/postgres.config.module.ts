@@ -1,3 +1,4 @@
+import { AuthEntity } from './../modules/auth/repository/auth.entity';
 import { ConfigService } from '@nestjs/config';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -11,7 +12,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         port: configService.getOrThrow('DATABASE_PORT'),
         password: configService.getOrThrow('DATABASE_PASS'),
         username: configService.getOrThrow('DATABASE_USER'),
-        entities: ['dist/**/*.entity{.ts,.js}'],
+        entities: [AuthEntity],
         database: configService.getOrThrow('DATABASE_DATABASE'),
         synchronize: true,
         logging: true,

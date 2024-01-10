@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthEntity } from './auth.entity';
 import { InsertResult, Repository, UpdateResult } from 'typeorm';
-import { registerDto } from '../dto/index.dto';
+import { UpdateUserEntity, registerDto } from '../dto/index.dto';
 
 Injectable();
 export class AuthRepository {
@@ -26,9 +26,23 @@ export class AuthRepository {
     return userInfo;
   }
 
-  public async updateUser(userData: AuthEntity): Promise<UpdateResult> {
+  public async updateUser(userData: UpdateUserEntity): Promise<UpdateResult> {
+    console.log(userData.id);
+
     const updateResult = await this.repository.update(
       { id: userData.id },
+      { ...userData },
+    );
+    return updateResult;
+  }
+
+  public async updateUserByEmail(
+    userData: UpdateUserEntity,
+  ): Promise<UpdateResult> {
+    console.log(userData);
+
+    const updateResult = await this.repository.update(
+      { email: userData.email },
       { ...userData },
     );
     return updateResult;

@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
+import { registerDto } from 'modules/auth/dto/index.dto';
 
 @Injectable()
 export class CommonUtilityService {
@@ -36,7 +37,7 @@ export class CommonUtilityService {
    * @returns A Promise that resolves to a boolean indicating whether the token matches the hash.
    * @throws ErrorException - Throws an error exception if the comparison process encounters an error.
    */
-  public async compare(hash: string, str: string) {
+  public async compare(hash: string, str: string): Promise<boolean> {
     try {
       if (typeof hash !== 'string' || typeof str !== 'string') {
         throw new Error('Inputs must be strings');
@@ -86,7 +87,10 @@ export class CommonUtilityService {
    * @returns A Promise that resolves to the decoded content of the token.
    * @throws UnauthorizedException - Throws an unauthorized exception if the token is invalid.
    */
-  public async decodeToken(token: string, secret_key: string): Promise<any> {
+  public async decodeToken(
+    token: string,
+    secret_key: string,
+  ): Promise<string | jwt.JwtPayload> {
     try {
       return jwt.verify(token, secret_key);
     } catch (error) {

@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
-enum UserRole {
+export enum UserRole {
   ADMIN = 'admin',
   AGENT = 'agent',
   USER = 'user',
@@ -32,6 +32,6 @@ export class AuthEntity {
   })
   role: UserRole;
 
-  @Column({ name: 'special_token', type: 'string', default: null })
+  @Column({ name: 'special_token', default: null })
   special_token: string;
 }
