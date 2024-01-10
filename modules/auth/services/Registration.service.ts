@@ -54,7 +54,6 @@ export class RegistrationService {
         password: hashPassword,
       });
     } else if (result.isVerified === false) {
-      //BUG: How can i pass Error in frontend
       throw new BadRequestException(
         `User ${email} already registered! Not Verified. Please verify your email using OTP`,
       );

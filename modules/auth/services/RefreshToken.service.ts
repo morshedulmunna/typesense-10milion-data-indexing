@@ -4,10 +4,7 @@ import { CommonUtilityService } from '../utility-service/common-utility.service'
 
 @Injectable()
 export class RefreshTokenService {
-  constructor(
-    private readonly authRepository: AuthRepository,
-    private readonly commonUtility: CommonUtilityService,
-  ) {}
+  constructor(private readonly commonUtility: CommonUtilityService) {}
   async refreshToken(token: string) {
     const decodedData: any = await this.commonUtility.decodeToken(
       token,

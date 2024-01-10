@@ -33,7 +33,7 @@ export class RegenerateOtService {
           email: result.email,
           name: result.name,
           activationCode,
-          password: result.password, //TODO: Passing Hashed Password
+          password: result.password,
         },
         secret: process.env.JWT_SECRET,
         expiresIn: parseInt(process.env.JWT_SECRET_EXPIRE) * 60 * 1000,
