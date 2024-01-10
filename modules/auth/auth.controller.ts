@@ -1,5 +1,13 @@
 import { FastifyReply } from 'fastify';
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Res,
+} from '@nestjs/common';
 import { EmailVerifyService } from './services/EmailVerify.service';
 import {
   loginDto,
@@ -12,6 +20,7 @@ import { Public } from './auth-decorator/public.decorator';
 import { RegenerateOtService } from './services/RegenerateOTP';
 import { GetToken } from './auth-decorator/get-auth-token.decorator';
 import { LoginService } from './services/Login.service';
+import { RefreshTokenService } from './services/RefreshToken.service';
 
 @Controller('auth')
 export class AuthController {
@@ -20,6 +29,7 @@ export class AuthController {
     private readonly RegistrationService: RegistrationService,
     private readonly regenerateOtpService: RegenerateOtService,
     private readonly loginService: LoginService,
+    private readonly refreshTokenService: RefreshTokenService,
   ) {}
 
   /**
@@ -68,5 +78,17 @@ export class AuthController {
   @Post('login')
   async login(@Body() loginInfo: loginDto) {
     return this.loginService.login(loginInfo);
+  }
+
+  /**
+   *
+   * Refresh Token Controller which handle when access token invalid returns new access token
+   *
+   */
+
+  @Get('refresh')
+  @HttpCode(HttpStatus.OK)
+  async refresh(@GetToken() token: string): Promise<any> {
+    return this.refreshTokenService.refreshToken(token);
   }
 }

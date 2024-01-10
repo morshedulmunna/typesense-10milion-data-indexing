@@ -1,32 +1,14 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotAcceptableException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { AuthRepository } from '../repository/auth.repository';
-import { FastifyReply } from 'fastify';
-import { registerDto, verifyEmailDTO } from '../dto/index.dto';
-import * as jwt from 'jsonwebtoken';
 import { CommonUtilityService } from '../utility-service/common-utility.service';
-import { ulid } from 'ulid';
-
-interface DecoderUserInfo {
-  email: string;
-  name: string;
-  activationCode: string;
-  password: string;
-  iat: number;
-  exp: number;
-}
 
 @Injectable()
-export class EmailVerifyService {
+export class RefreshTokenService {
   constructor(
     private readonly authRepository: AuthRepository,
     private readonly commonUtility: CommonUtilityService,
   ) {}
-
-  async emailVerify({ otp }: verifyEmailDTO, token: string) {
+  async refreshToken(token: string) {
     const decodedData: any = await this.commonUtility.decodeToken(
       token,
       process.env.JWT_SECRET,
@@ -35,28 +17,8 @@ export class EmailVerifyService {
     if (!decodedData)
       throw new BadRequestException('Invalid Validation Token!');
 
-    const { activationCode, password, iat, exp, ...cleanedData } = decodedData;
+    const { id, name, role, email, isVerified } = decodedData;
 
-    // Direct comparison between activationCode and OTP
-    if (activationCode !== otp.toString()) {
-      throw new BadRequestException('Invalid OTP!');
-    }
-
-    // Special Token
-    const special_token = ulid();
-
-    // Update user information; set isVerified to true
-    await this.authRepository.updateUserByEmail({
-      ...cleanedData,
-      isVerified: true,
-      special_token,
-    });
-
-    const result = await this.authRepository.getSingleUserInfo(
-      decodedData.email,
-    );
-
-    const { id, name, role, email, isVerified } = result;
     // Generate Email validation token for sending
     const access_token = await this.commonUtility.generateToken({
       payload: {
@@ -83,7 +45,8 @@ export class EmailVerifyService {
     });
 
     return {
-      message: `your email ${decodedData.email}  is Verified`,
+      message: `success!`,
+      data: decodedData,
       access_token,
       refresh_token,
     };

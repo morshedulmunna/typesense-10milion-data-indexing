@@ -10,6 +10,7 @@ import { SendMailService } from '@app/send-mailer';
 import { RegenerateOtService } from './services/RegenerateOTP';
 import { CommonUtilityService } from './utility-service/common-utility.service';
 import { LoginService } from './services/Login.service';
+import { RefreshTokenService } from './services/RefreshToken.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([AuthEntity])],
@@ -22,6 +23,7 @@ import { LoginService } from './services/Login.service';
     SendMailService,
     RegenerateOtService,
     LoginService,
+    RefreshTokenService,
   ],
 })
 export class AuthModule {}
