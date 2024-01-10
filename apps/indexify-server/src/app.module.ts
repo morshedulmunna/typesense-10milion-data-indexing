@@ -7,7 +7,6 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from 'modules/auth/guards/Auth.guard';
 import { CommonUtilityService } from 'modules/auth/utility-service/common-utility.service';
-import { CustomExceptionFilter } from '@app/error-exception';
 
 @Module({
   imports: [

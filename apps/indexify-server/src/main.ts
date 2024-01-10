@@ -8,7 +8,6 @@ import {
 } from '@nestjs/platform-fastify';
 import { ValidationPipe } from '@nestjs/common';
 import fastifyCookie from '@fastify/cookie';
-import { AllExceptionsFilter } from 'libs/ExceptionFilter';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -22,9 +21,6 @@ async function bootstrap() {
   });
 
   app.useGlobalPipes(new ValidationPipe());
-
-  // const { httpAdapter } = app.get(HttpAdapterHost);
-  // app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
 
   // Swagger Config
   swaggerConfig(app);
