@@ -19,6 +19,7 @@ async function bootstrap() {
   await app.register(fastifyCookie, {
     secret: process.env.COOKIES_SIGNATURE_SECRET, // for cookies signature
   });
+
   app.useGlobalPipes(new ValidationPipe());
 
   // Swagger Config

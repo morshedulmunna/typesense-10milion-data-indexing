@@ -17,9 +17,7 @@ export class AuthGuard implements CanActivate {
     private readonly commonService: CommonUtilityService,
   ) {}
 
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
 
     const isPublic = this.reflector.get<boolean>(
@@ -27,47 +25,65 @@ export class AuthGuard implements CanActivate {
       context.getHandler(),
     );
     if (isPublic) {
-      return true; // Public routes can be accessed without authentication
+      return true;
     }
 
-    // Check for Bearer token in headers or auth token in cookies
     const token =
-      request.headers.authorization ||
+      request.headers.authorization?.replace('Bearer ', '') ||
       request.cookies.authToken ||
-      request.session.token;
+      (request.session && request.session.token); // Check for session existence
 
-    //  if(request.headers.authorization){
-    //   if (!this.isTokenVerify(token, 'sds')) {
-    //     return false;
-    //   }
-    //  }
+    if (!token) return false;
 
-    if (!token) {
-      return false;
-    }
+    const tokenVerified: any = await this.isTokenVerify(
+      token,
+      process.env.JWT_SECRET,
+    );
 
     const requiredRole = this.reflector.get<string>(
       ROLES_KEY,
       context.getHandler(),
     );
+
     if (!requiredRole) {
       return true; // No specific role required, allow access
     }
     // Your authentication logic here to validate user role
-    const user = context.switchToHttp().getRequest().user; // Assuming you have a user object after authentication
-    if (!user || user.role !== requiredRole) {
+    const { role } = tokenVerified;
+    if (!tokenVerified || role !== requiredRole) {
       throw new UnauthorizedException(
         'You do not have the necessary role to access this resource',
       );
     }
 
-    // Check token validity using your authentication service
-
-    return false;
+    return true;
   }
-
+  // TODO: Authentication Logic not working properly
   private async isTokenVerify(token: string, secret: string) {
     const decoded = await this.commonService.decodeToken(token, secret);
-    if (!decoded) return false;
+
+    if (!decoded) return true;
+
+    return decoded;
   }
 }
+
+//    // Check for Bearer token in headers or auth token in cookies
+//    const token =
+//    request.headers.authorization ||
+//    request.cookies.authToken ||
+//    (request.session && request.session.token); // Check for session existence
+
+//  // if (!token) {
+//  //   throw new UnauthorizedException('Token not provided');
+//  // }
+
+//  const tokenVerified = await this.isTokenVerify(
+//    token,
+//    process.env.JWT_SECRET,
+//  );
+//  console.log(tokenVerified);
+
+//  if (!tokenVerified) {
+//    throw new UnauthorizedException('Invalid token');
+//  }

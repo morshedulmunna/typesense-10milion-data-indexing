@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotAcceptableException,
+} from '@nestjs/common';
 import { AuthRepository } from '../repository/auth.repository';
 import { FastifyReply } from 'fastify';
 import { registerDto, verifyEmailDTO } from '../dto/index.dto';
@@ -28,13 +32,14 @@ export class EmailVerifyService {
       process.env.JWT_SECRET,
     );
 
-    console.log(decodedData);
+    if (!decodedData)
+      throw new BadRequestException('Invalid Validation Token!');
 
     const { activationCode, password, iat, exp, ...cleanedData } = decodedData;
 
     // Direct comparison between activationCode and OTP
     if (activationCode !== otp.toString()) {
-      throw new Error('Invalid OTP!');
+      throw new BadRequestException('Invalid OTP!');
     }
 
     // Special Token

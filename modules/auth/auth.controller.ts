@@ -1,6 +1,13 @@
 import { FastifyReply } from 'fastify';
-import { Body, Controller, Post, Res } from '@nestjs/common';
-import { ErrorException } from '@app/error-exception';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Res,
+} from '@nestjs/common';
 import { EmailVerifyService } from './services/EmailVerify.service';
 import {
   loginDto,
@@ -13,6 +20,7 @@ import { Public } from './auth-decorator/public.decorator';
 import { RegenerateOtService } from './services/RegenerateOTP';
 import { GetToken } from './auth-decorator/get-auth-token.decorator';
 import { LoginService } from './services/Login.service';
+import { RefreshTokenService } from './services/RefreshToken.service';
 
 @Controller('auth')
 export class AuthController {
@@ -21,6 +29,7 @@ export class AuthController {
     private readonly RegistrationService: RegistrationService,
     private readonly regenerateOtpService: RegenerateOtService,
     private readonly loginService: LoginService,
+    private readonly refreshTokenService: RefreshTokenService,
   ) {}
 
   /**
@@ -34,11 +43,7 @@ export class AuthController {
     @Body() register_info: registerDto,
     @Res({ passthrough: true }) response: FastifyReply,
   ) {
-    try {
-      return this.RegistrationService.registration(register_info, response);
-    } catch (error) {
-      throw new ErrorException(error.message);
-    }
+    return this.RegistrationService.registration(register_info, response);
   }
 
   /**
@@ -52,11 +57,7 @@ export class AuthController {
     @Body() forVerificationEmail: regenerateOtp,
     @Res({ passthrough: true }) response: FastifyReply,
   ) {
-    try {
-      return this.regenerateOtpService.regenerateOtp(forVerificationEmail);
-    } catch (error) {
-      throw new ErrorException(error.message);
-    }
+    return this.regenerateOtpService.regenerateOtp(forVerificationEmail);
   }
 
   /**
@@ -66,11 +67,7 @@ export class AuthController {
    */
   @Post('email-verify')
   async emailVerify(@Body() otp: verifyEmailDTO, @GetToken() token: string) {
-    try {
-      return this.emailVerifyService.emailVerify(otp, token);
-    } catch (error) {
-      throw new ErrorException(error.message);
-    }
+    return this.emailVerifyService.emailVerify(otp, token);
   }
   /**
    *
@@ -80,10 +77,18 @@ export class AuthController {
   @Public()
   @Post('login')
   async login(@Body() loginInfo: loginDto) {
-    try {
-      return this.loginService.login(loginInfo);
-    } catch (error) {
-      throw new ErrorException(error.message);
-    }
+    return this.loginService.login(loginInfo);
+  }
+
+  /**
+   *
+   * Refresh Token Controller which handle when access token invalid returns new access token
+   *
+   */
+
+  @Get('refresh')
+  @HttpCode(HttpStatus.OK)
+  async refresh(@GetToken() token: string): Promise<any> {
+    return this.refreshTokenService.refreshToken(token);
   }
 }

@@ -22,6 +22,8 @@ export const GetToken = createParamDecorator(
       token = request.session.token;
     }
 
+    console.log(token);
+
     return token;
   },
 );
