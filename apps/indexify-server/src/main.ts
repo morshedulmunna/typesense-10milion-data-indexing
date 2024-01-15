@@ -16,8 +16,15 @@ async function bootstrap() {
   );
 
   // Middle ware
-  await app.register(fastifyCookie, {
-    secret: process.env.COOKIES_SIGNATURE_SECRET, // for cookies signature
+  // await app.register(fastifyCookie, {
+  //   secret: process.env.COOKIES_SIGNATURE_SECRET, // for cookies signature
+  // });
+
+  // Customize CORS options if needed
+  app.enableCors({
+    origin: 'http://localhost:3001',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
   });
 
   app.useGlobalPipes(new ValidationPipe());
